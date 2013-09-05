@@ -36,3 +36,14 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+
+gem 'bootstrap-sass'
+gem 'haml-rails'
+gem 'mysql2'
+gem 'simple_form'
+gem 'thin'
+
+group :development do
+  gem 'html2haml'
+end
+
