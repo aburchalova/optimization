@@ -1,0 +1,4 @@
+RECIPES
+["example", "frontend", "gems", "git", "setup"]
+PREFERENCES
+{:test_orbit=>"leo", :git=>true, :dev_webserver=>"thin", :prod_webserver=>"thin", :database=>"mysql", :templates=>"haml", :frontend=>"bootstrap", :bootstrap=>"sass", :email=>"none", :form_builder=>"simple_form"}
