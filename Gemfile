@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '1.9.2'
+ruby '1.9.3'
 gem 'rails', '3.2.14'
 
 # Bundle edge Rails instead:
@@ -35,15 +35,21 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'debugger'
+gem 'debugger'
 
 gem 'bootstrap-sass'
 gem 'haml-rails'
 gem 'mysql2'
 gem 'simple_form'
 gem 'thin'
+gem 'gsl'
 
 group :development do
   gem 'html2haml'
+  gem 'pry-rails'
+end
+
+group :development, :test do
+  gem 'rspec-rails'
 end
 
