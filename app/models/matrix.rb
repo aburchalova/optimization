@@ -1,13 +1,17 @@
-# require 'gsl'
-
-class Matrix < ActiveRecord::Base
+class Matrix
   attr_accessor :gsl_matrix
+  include Comparable
 
   include Matrices::Optimization
 
   # args is array list
   def initialize(*args)
     @gsl_matrix = GSL::Matrix[*args]
+    self
+  end
+
+  def self.from_gsl(gsl_matrix)
+    self.new(*gsl_matrix.to_a)
   end
 
   # TODO: more effecient implementation
@@ -31,12 +35,33 @@ class Matrix < ActiveRecord::Base
 
   # TODO: remove to_a because of precision
   def to_s
+    gsl_matrix.to_s
+  end
+
+  def parsed
     to_a.to_s
   end
 
-  alias :parsed :to_s
-
   def from_s(string)
     JSON.parse(string)
+  end
+
+  def <=>(other)
+    return self.gsl_matrix <=> other.gsl_matrix if other.respond_to?(:gsl_matrix)
+    return self.gsl_matrix <=> other
+  end
+
+  def ==(other)
+    return false unless size1 == other.size1 && size2 == other.size2
+    v2 = other.to_v.to_a
+    to_v.to_a.each_with_index { |item, idx| return false if item != v2[idx] }
+    true
+  end
+
+  def self.random(n)
+    items = (1..n).to_a
+    rows = []
+    n.times { rows << items.shuffle }
+    Matrix.new(*rows)
   end
 end

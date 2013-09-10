@@ -1,10 +1,6 @@
 module Matrices::Optimization
   extend ActiveSupport::Concern
 
-  def invertible?
-
-  end
-
   # Calculates alpha
   # If alpha is zero, the matrix is singular
   #
@@ -15,6 +11,7 @@ module Matrices::Optimization
   # @return [Float]
   #
   def alpha(inverse, k)
+    raise ArgumentError, 'Matrix is not square' if size1 != size2
     # as vect * matrix = matrix.transpose * vect
     inverse.transpose * self.class.eye_row(:size => size1, :index => k) * column(k)
   end
@@ -22,7 +19,18 @@ module Matrices::Optimization
   # @see #alpha
   # 
   def singular?(inverse, k)
-    alpha == 0
+    alpha(inverse, k) == 0
+  end
+
+  # @see #alpha
+  # 
+  def inverse(inverse, k)
+    a = alpha(inverse, k)
+    raise ArgumentError, 'Matrix is not inversible' if a.zero?
+    d = Matrix.eye(size1) # size1?
+    z = - (inverse * column(k)).set(k, -1) / a
+    d.set_col(k, z)
+    d * inverse
   end
 
   module ClassMethods
