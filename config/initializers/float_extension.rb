@@ -1,5 +1,5 @@
 class Float
-  COMPARISON_PRECISION = 1.0/10**4
+  COMPARISON_PRECISION = 1.0/10**8
 
   def lt?(other)
     self - other < COMPARISON_PRECISION

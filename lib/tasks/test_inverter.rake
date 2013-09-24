@@ -5,7 +5,6 @@ namespace :inverter do
     puts "Matrix: \n#{m}\nInitializing matrix inverter........."
     mi = MatrixInverter.new(m)
     puts mi.to_s
-    sleep(2)
 
     puts "\nStarting algorithm\nLogging enabled"
     mi.enable_log!
@@ -19,18 +18,20 @@ namespace :inverter do
   end
 
   task :bulk_test => :environment do
-    size = ENV['SIZE'] || 3
-    test_count = ENV['N'] || 10
-    log = ENV['LOG'] || false
+    size = (ENV['SIZE'] || 3).to_i
+    test_count = (ENV['N'] || 10).to_i
+    log = ENV['LOG'].to_s.downcase == "true" 
     puts "Testing with matrices of size #{size}"
     puts "#{test_count} test will be done. Dot for passed test, x for failed."
+    puts "(You can set SIZE, N, LOG environment variables)"
     puts "Starting"
     test_count.times do
       m = Matrix.random(size)
       mi = MatrixInverter.new(m)
-      # mi.enable_log!
+      mi.show_log = log
       mi.run
-      puts mi.check ? '.' : 'x'
+      print mi.check ? '.' : 'x'
     end
+    puts
   end
 end

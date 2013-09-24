@@ -1,7 +1,6 @@
 class MatrixInverter < Struct.new(:matrix, :k, :taken_column, :c, :c_inv,
   :available_column_indices, :status, :show_log, :result, :actual_column_sequence)
 
-  # STATUSES = %w(initialized, step_completed, zero_alpha)
   STATUSES = {
     :initialized => 'initialized',
     :step_completed => 'step_completed',
