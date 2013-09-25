@@ -58,6 +58,25 @@ class Matrix
     true
   end
 
+
+  # cuts columns +cols+ from matrix
+  # as another matrix
+  # 
+  def cut(cols)
+    # result = GSL::Matrix.alloc(size1, 1)
+    # cols.each do |col| # problem: 1. matix view to matrix 2. initial result in horzcatting - cannot init a matrix with zero columns
+    #   result = result.horzcat(self.column(col).to_m(size2, 1)) 
+    # end
+    # Matrix.from_gsl(result)
+    
+    first_col = cols.shift
+    result = submatrix(nil, first_col..first_col)
+    cols.each do |col|
+      result = result.horzcat submatrix(nil, col..col)
+    end
+    Matrix.from_gsl(result)
+  end
+
   def self.random(n)
     items = (1..n).to_a
     rows = []
