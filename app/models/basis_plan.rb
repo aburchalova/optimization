@@ -13,13 +13,13 @@ class BasisPlan < Struct.new(:x, :basis_indexes)
   end
 
   # array of basis x components
-  # 
+  #
   def x_b
     x.values_at(*basis_indexes)
   end
 
   # array of non-basis x components
-  # 
+  #
   def x_n
     x - x_b
   end
