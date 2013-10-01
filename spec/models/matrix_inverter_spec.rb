@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'app/models/matrix_inverter'
+require_relative '../../app/models/matrix_inverter'
 
 describe "MatrixInverter" do
   
