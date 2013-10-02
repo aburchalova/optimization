@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe BasisPlan do
-  let(:plan) { BasisPlan.new :x => [1, 2, 3], :basis_indexes => [0] }
-  let(:zero_plan) { BasisPlan.new :x => [0, 0, 0], :basis_indexes => [0] }
+  let(:plan) { BasisPlan.new([1, 2, 3], [0]) }
+  let(:zero_plan) { BasisPlan.new([0, 0, 0], [0]) }
 
   it { plan.x_b.should == [1] }
   it { plan.x_n.should == [2, 3] }

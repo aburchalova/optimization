@@ -68,9 +68,9 @@ class Matrix
     #   result = result.horzcat(self.column(col).to_m(size2, 1)) 
     # end
     # Matrix.from_gsl(result)
-    
+    cols = cols.dup
     first_col = cols.shift
-    result = submatrix(nil, first_col..first_col)
+    result = dup.submatrix(nil, first_col..first_col)
     cols.each do |col|
       result = result.horzcat submatrix(nil, col..col)
     end
