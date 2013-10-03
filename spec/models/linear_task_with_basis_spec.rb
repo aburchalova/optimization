@@ -66,4 +66,12 @@ describe LinearTaskWithBasis do
     let(:expected) { [0, 0, -1, 1] }
     it { task_with_nonsingular_plan.estimates_ary.should == expected }
   end
+
+  describe 'sufficient_for_optimal?' do
+    it { task_with_nonsingular_plan.sufficient_for_optimal?.should == false }
+  end
+
+  describe 'negative_estimate_index' do
+    it { task_with_nonsingular_plan.negative_estimate_index.should == 2 }
+  end
 end
