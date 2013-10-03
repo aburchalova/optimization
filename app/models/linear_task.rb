@@ -21,4 +21,17 @@ class LinearTask < Struct.new(:a, :b, :c)
   def target_function(x)
     c.transpose * x
   end
+
+  def to_s
+    %Q(
+      A = #{m} by #{n} matrix
+      #{a.to_s}
+
+      b =
+      #{b.to_s}
+
+      c =
+      #{c.to_s}
+    )
+  end
 end

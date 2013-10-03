@@ -49,7 +49,7 @@ describe LinearTaskWithBasis do
 
   describe "c_b" do
     let(:expected) { Matrix.new([1, 2]) }
-    it { puts "task: #{task_with_nonsingular_plan}"; task_with_nonsingular_plan.c_b.should == expected }
+    it { task_with_nonsingular_plan.c_b.should == expected }
   end
 
   describe "c_n" do
@@ -58,12 +58,12 @@ describe LinearTaskWithBasis do
   end
 
   describe "potential_string" do
-    let(:expected) { GSL::Matrix[[3, -1]] }
+    let(:expected) { GSL::Matrix[[1.5, -0.5]] }
     it { task_with_nonsingular_plan.potential_string.should == expected }
   end
 
   describe 'estimates_ary' do
-    let(:expected) { [0, 0, -1, 1] }
+    let(:expected) { [0, 0, -2, -1.5] }
     it { task_with_nonsingular_plan.estimates_ary.should == expected }
   end
 
@@ -73,5 +73,21 @@ describe LinearTaskWithBasis do
 
   describe 'negative_estimate_index' do
     it { task_with_nonsingular_plan.negative_estimate_index.should == 2 }
+  end
+
+  describe 'inverted_basis_matrix' do
+    let(:a_b_inverted_expected) { task_with_nonsingular_plan.a_b.invert }
+
+    it "is retrieved by z calculations" do
+      task_with_nonsingular_plan.should_receive(:inverted_basis_matrix).and_return a_b_inverted_expected
+      task_with_nonsingular_plan.z
+    end
+
+    it "if forced set, doesn't calculate" do
+      task_with_nonsingular_plan.inverted_basis_matrix = a_b_inverted_expected
+      task_with_nonsingular_plan.a_b.should_not_receive(:invert) #invert is standart and 'slow'
+
+      task_with_nonsingular_plan.z #retrieves inverted_basis_matrix
+    end
   end
 end
