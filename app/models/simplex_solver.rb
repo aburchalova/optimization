@@ -40,17 +40,19 @@ class SimplexSolver
     # new A is different from old by the s-th column
     # invert new A
     # start again with new A and new basis
-    if task.z.nil? #sufficient for optimal
+
+    if task.singular_basis_matrix?
+      @status = STATUSES[:singular]
+    elsif task.sufficient_for_optimal? #sufficient for optimal
       @status = STATUSES[:optimal]
     elsif task.positive_z_index == nil # if z <= 0, target function is unlimited
       @status = STATUSES[:unlimited]
     else
-      @task = task.with(new_x, new_basis)
       @status = STATUSES[:step_completed]
     end
     puts self if logging
-    # return @status = STATUSES[:optimal] if task.z.nil? #sufficient for optimal
-    # return @status = STATUSES[:unlimited] if task.positive_z_index == nil # if z <= 0, target function is unlimited
+    @task = task.with(new_x, new_basis) if @status == STATUSES[:step_completed]
+    self
   end
 
   # def set_step_end_status
@@ -74,12 +76,14 @@ class SimplexSolver
   end
 
   def new_basis
+    puts "basis indexes - #{task.basis_indexes}"
+    puts "making basis_indexes[#{s}] = #{new_basis_column}, i.e. instead of #{task.basis_indexes[s]}"
     task.basis_indexes.dup.tap { |indices| indices[s] = new_basis_column }
   end
 
   # Index of minimal theta. New basis matrix will be different by column #s
   def s
-    @s ||= task.min_theta_index
+    task.min_theta_index
   end
 
   def new_nonbasis_column
@@ -91,11 +95,7 @@ class SimplexSolver
   end
 
   def new_a_b_inv
-    begin
-      task.a_b.inverse(task.a_b_inv, s)
-    rescue ArgumentError
-      @status = STATUSES[:singular]
-    end
+    task.a_b.inverse(task.a_b_inv, s)
   end
 
   def fill_basis_components(result)
@@ -114,12 +114,12 @@ class SimplexSolver
 
   def to_s
     %Q(
---------SIMPLEX SOLVER-----STATUS: #{status}---------
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  INITIAL TASK: #{task.task.to_s}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  #{task.to_s}
-------------------------------------------------------
+      --------SIMPLEX SOLVER-----STATUS: #{status}---------
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      INITIAL TASK: #{task.task.to_s}
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #{task.to_s}
+      ------------------------------------------------------
     )
   end
 end

@@ -74,7 +74,7 @@ class Matrix
     cols.each do |col|
       result = result.horzcat submatrix(nil, col..col)
     end
-    Matrix.from_gsl(result)
+    ::Matrix.from_gsl(result)
   end
 
   def self.random(n)

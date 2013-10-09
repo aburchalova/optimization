@@ -17,7 +17,7 @@ class LinearTaskWithBasis
   # plan_vect is array, makes matrix
   # 
   def with(plan_vect, basis_indices)
-    LinearTaskWithBasis.new(task, BasisPlan.new(plan_vect, basis_indices))
+    ::LinearTaskWithBasis.new(task, BasisPlan.new(plan_vect, basis_indices))
   end
 
   # TODO: add memoization?
@@ -56,7 +56,7 @@ class LinearTaskWithBasis
   end
 
   def sufficient_for_optimal?
-    estimates_ary.all? { |i| i >= 0 }
+    !singular_basis_matrix? && estimates_ary.all? { |i| i >= 0 }
   end
 
   # def target_function_unlimited?
@@ -69,8 +69,12 @@ class LinearTaskWithBasis
   end
   alias :a_b :basis_matrix
 
+  def singular_basis_matrix?
+    a_b.det.zero?
+  end
+
   def inverted_basis_matrix #TODO: add ability to pass inverted?
-    @inverted_basis_matrix ||= a_b.invert
+    @inverted_basis_matrix ||= a_b.invert 
   end
   alias :a_b_inv :inverted_basis_matrix
   alias :a_b_inv= :inverted_basis_matrix=
@@ -196,15 +200,21 @@ class LinearTaskWithBasis
     min_theta_with_index.last
   end
 
-  def to_s
+  def description
     %Q(
+  Basis matrix:
+  #{a_b}
 
   Current x:
   #{x_ary}
 
   Basis indices:
   { #{basis_indexes.join(',')} }
+  )
+  end
 
+  def description_for_non_singular
+    %Q(
   Potentials string:
   #{potential_string}
 
@@ -216,15 +226,16 @@ class LinearTaskWithBasis
 
   j0 (negative estimate index):
   #{j0}
-
-  #{non_optimal_statistics}
-    )
+    )    
   end
 
-  def non_optimal_statistics
-    if sufficient_for_optimal?
-      'Optimal solution found, so z and theta are not calculated'
-    else
+  def to_s
+    res = description
+    res += description_for_non_singular unless singular_basis_matrix?
+    res += description_for_non_optimal if !singular_basis_matrix? && !sufficient_for_optimal? 
+  end
+
+  def description_for_non_optimal
     %Q(
   Calculated z [ Ab^(-1) * A[j0] ]
   #{z}
@@ -238,6 +249,5 @@ class LinearTaskWithBasis
   Minimal theta index:
   #{min_theta_index}
     )
-    end
   end
 end
