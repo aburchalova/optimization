@@ -1,23 +1,30 @@
 class SimplexSolver
   STATUSES = {
     :initialized => 'initialized',
-    :optimal => 'solved',
+    :optimal => 'optimal',
     :singular => 'matrix is singular',
     :unlimited => 'unlimited',
-    :step_completed => 'step completed'
+    :step_completed => 'step completed',
+    :incompatible => 'incompatible constraints'
   }
 
-  END_STATUSES = STATUSES.slice(:singular, :unlimited, :optimal)
+  END_STATUSES = STATUSES.slice(:singular, :unlimited, :optimal, :incompatible)
 
   attr_accessor :task, :status, :logging
 
   def initialize(task_with_plan)
-    raise ArgumentError, 'Given plan is not a basis plan' unless task_with_plan.basis_plan?
     @initial_task = task_with_plan
     @task = task_with_plan
     @status = STATUSES[:initialized]
     @logging = false
     self
+  end
+
+  def self.simple_init(a, b, c, plan, basis)
+    task1 = LinearTask.new(:a => a, :b => b, :c => c)
+    x = BasisPlan.new(plan, basis)
+    task_with_plan = LinearTaskWithBasis.new(task1, x)
+    new(task_with_plan)
   end
 
   def finished?
@@ -40,8 +47,9 @@ class SimplexSolver
     # new A is different from old by the s-th column
     # invert new A
     # start again with new A and new basis
-
-    if task.singular_basis_matrix?
+    if !task.basis_plan?
+      @status = STATUSES[:incompatible]
+    elsif task.singular_basis_matrix?
       @status = STATUSES[:singular]
     elsif task.sufficient_for_optimal? #sufficient for optimal
       @status = STATUSES[:optimal]
@@ -50,22 +58,40 @@ class SimplexSolver
     else
       @status = STATUSES[:step_completed]
     end
-    puts self if logging
-    @task = task.with(new_x, new_basis) if @status == STATUSES[:step_completed]
+    new_task = compose_new_task
+    calculate_target_function_delta(new_task)
+    log_stats
+    set_new_task(new_task)
     self
   end
 
-  # def set_step_end_status
-  #   @status = @task.sufficient_for_optimal? ? STATUSES[:optimal] : STATUSES[:step_completed]
-  #   @status = STATUSES[:unlimited] if task.positive_z_index == nil
-  # end
+  def log_stats
+    puts self if logging
+  end
 
-  def first_step #TODO: add setting a_b_inv_new
+  def compose_new_task
+    return task if finished?
+    inverted_new_matrix = new_a_b_inv
+    task.with(new_x, new_basis).tap do |t|
+      t.inverted_basis_matrix = inverted_new_matrix
+    end
+  end
 
+  def set_new_task(new_task)
+    @task = new_task
   end
 
   def iterate
     step until finished?
+  end
+
+  def optimal?
+    @status == STATUSES[:optimal]
+  end
+
+  def result
+    iterate
+    optimal? && task.x_ary || status
   end
 
   def new_x
@@ -75,9 +101,16 @@ class SimplexSolver
     Matrix.new(result).transpose
   end
 
+  def target_function_delta(new_task)
+    new_task.target_function - task.target_function
+  end
+
+  def calculate_target_function_delta(new_task)
+    @target_function_delta = new_task.target_function - task.target_function
+  end
+
   def new_basis
-    puts "basis indexes - #{task.basis_indexes}"
-    puts "making basis_indexes[#{s}] = #{new_basis_column}, i.e. instead of #{task.basis_indexes[s]}"
+    # puts "new basis: #{task.basis_indexes.dup.tap { |indices| indices[s] = new_basis_column }}"
     task.basis_indexes.dup.tap { |indices| indices[s] = new_basis_column }
   end
 
@@ -94,8 +127,13 @@ class SimplexSolver
     task.j0
   end
 
+  def new_a_b
+    # puts "old basis matrix: \n#{task.a_b}\nnew basis: #{new_basis}\nnew basis matrix: #{task.a.cut(new_basis)}"
+    task.a.cut(new_basis)
+  end
+
   def new_a_b_inv
-    task.a_b.inverse(task.a_b_inv, s)
+    new_a_b.inverse(task.a_b_inv, s)
   end
 
   def fill_basis_components(result)
@@ -112,14 +150,30 @@ class SimplexSolver
     result
   end
 
+  def initial_status
+    return unless @status == STATUSES[:initialized]
+%Q(
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #{task.task.to_s}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)
+  end
+
+  def target_delta
+    return unless @status == STATUSES[:step_completed]
+    "Target function delta: #{@target_function_delta}\n"
+  end
+
+  def step_description
+    return if @status == STATUSES[:initialized]
+    task.to_s
+  end
+
   def to_s
     %Q(
-      --------SIMPLEX SOLVER-----STATUS: #{status}---------
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      INITIAL TASK: #{task.task.to_s}
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      #{task.to_s}
-      ------------------------------------------------------
-    )
+--------SIMPLEX SOLVER-----STATUS: #{status}----------------------
+      #{initial_status}
+      #{step_description}
+      #{target_delta}
+-------------------------------------------------------------)
   end
 end

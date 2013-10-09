@@ -7,7 +7,7 @@ require 'delegate'
 class LinearTaskWithBasis
   attr_accessor :task, :plan
   attr_writer :inverted_basis_matrix
-  delegate :m, :n, :to => :task
+  delegate :m, :n, :a, :b, :c, :to => :task
   delegate :basis_indexes, :x_ary, :to => :plan
 
   def initialize(task, plan)
@@ -15,7 +15,7 @@ class LinearTaskWithBasis
   end
 
   # plan_vect is array, makes matrix
-  # 
+  #
   def with(plan_vect, basis_indices)
     ::LinearTaskWithBasis.new(task, BasisPlan.new(plan_vect, basis_indices))
   end
@@ -73,8 +73,14 @@ class LinearTaskWithBasis
     a_b.det.zero?
   end
 
-  def inverted_basis_matrix #TODO: add ability to pass inverted?
-    @inverted_basis_matrix ||= a_b.invert 
+  def inverted_basis_matrix
+    @inverted_basis_matrix ||= a_b.invert
+  end
+
+  # Ability to pass already calculated matrix for optimization
+  #
+  def inverted_basis_matrix=(matrix)
+    @inverted_basis_matrix ||= matrix
   end
   alias :a_b_inv :inverted_basis_matrix
   alias :a_b_inv= :inverted_basis_matrix=
@@ -98,7 +104,7 @@ class LinearTaskWithBasis
   end
 
   def target_function
-    task.target_function(plan)
+    task.target_function(plan.x)
   end
 
   def potential_vector
@@ -141,6 +147,8 @@ class LinearTaskWithBasis
   end
   alias :j0 :negative_estimate_index
 
+  # plan is delta x
+  #
   def target_function_delta
     - (estimates_n * plan.x_n).get(0)
   end
@@ -226,13 +234,14 @@ class LinearTaskWithBasis
 
   j0 (negative estimate index):
   #{j0}
-    )    
+    )
   end
 
   def to_s
     res = description
     res += description_for_non_singular unless singular_basis_matrix?
-    res += description_for_non_optimal if !singular_basis_matrix? && !sufficient_for_optimal? 
+    res += description_for_non_optimal unless singular_basis_matrix? || sufficient_for_optimal?
+    res
   end
 
   def description_for_non_optimal

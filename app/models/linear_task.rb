@@ -3,7 +3,8 @@
 # e.g. maximizing c' * x
 # when A * x = b
 # and x >= 0
-
+# A is matrix, b and c - vectors
+#
 class LinearTask < Struct.new(:a, :b, :c)
 
   def initialize(hash)
@@ -18,8 +19,8 @@ class LinearTask < Struct.new(:a, :b, :c)
     a.size2
   end
 
-  def target_function(x)
-    c.transpose * x
+  def target_function(x_matrix)
+    (c * x_matrix).get(0)
   end
 
   def to_s
