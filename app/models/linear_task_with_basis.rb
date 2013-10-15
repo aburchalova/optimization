@@ -142,7 +142,14 @@ class LinearTaskWithBasis
     Matrix.new(estimates_n).transpose
   end
 
-  def negative_estimate_index
+# est_and_basis = estimates.zip(basis)
+# negative_estimates = est_and_basis.select { |e_and_b| e_and_b.first < 0}
+# neg_estimates_indices = negative_estimates.map(&:last)
+# min_neg_est_ind = neg_estimates_indices.min
+# estimate_and_index = negative_estimates.find { |est_and_b| est_and_b.last == min_neg_est_ind }
+# result = est_and_basis.index(estimate_and_index)
+
+  def negative_estimate_index # TODO: add Blend rule
     estimates_ary.index { |i| i < 0 }
   end
   alias :j0 :negative_estimate_index
@@ -155,7 +162,7 @@ class LinearTaskWithBasis
 
   def calculate_z
     j = negative_estimate_index
-    return if !j #TODO: use matrix inverter
+    return if !j
     matrix_col = task.a.cut([j]).gsl_matrix
     inverted_basis_matrix * matrix_col
   end

@@ -56,9 +56,6 @@ namespace :simplex do
     solver = SimplexSolver.new(task_with_plan)
     puts solver
     solver.logging = true
-    # solver.step
-    # solver.step
-    # solver.step
     solver.iterate
   end
 end
