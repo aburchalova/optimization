@@ -5,7 +5,7 @@ module Statuses
     attr_accessor :code, :description, :data
 
     def initialize(hash = nil)
-      return @initial_status if !hash
+      return from_code!(self.class.initial_status.code) if !hash
       @code, @description, @data = hash.values_at(:code, :description, :data)
     end
 
@@ -18,6 +18,10 @@ module Statuses
       @description = self.class.human_description(code)
       @data = nil
       self
+    end
+
+    def to_s
+      description
     end
 
     module ClassMethods
