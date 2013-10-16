@@ -21,8 +21,23 @@ describe SimplexSolver do
     it { task_with_plan.theta.should == [Float::INFINITY, 0.5] }
   end
 
-  describe 'min_theta_with_index' do
-    it { task_with_plan.min_theta_with_index.should == [0.5, 1] }
+  describe 'min_theta' do
+    it { task_with_plan.min_theta.should == 0.5 }
+  end
+
+  describe 'min_theta_index' do
+    it { task_with_plan.min_theta_index.should == 1 }
+
+    context "when Blend's rule counts" do
+      before do
+        task_with_plan.stub(:theta =>  [42, 42, Float::INFINITY])
+        task_with_plan.stub(:basis_indexes => [9, 8, 7])
+      end
+
+      it "takes value from min thetas with index s so that basis_indexes[s] is minimal" do
+        task_with_plan.min_theta_index.should == 1
+      end
+    end
   end
 
   describe 'new_x' do

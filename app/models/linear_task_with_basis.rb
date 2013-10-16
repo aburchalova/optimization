@@ -142,15 +142,13 @@ class LinearTaskWithBasis
     Matrix.new(estimates_n).transpose
   end
 
-# est_and_basis = estimates.zip(basis)
-# negative_estimates = est_and_basis.select { |e_and_b| e_and_b.first < 0}
-# neg_estimates_indices = negative_estimates.map(&:last)
-# min_neg_est_ind = neg_estimates_indices.min
-# estimate_and_index = negative_estimates.find { |est_and_b| est_and_b.last == min_neg_est_ind }
-# result = est_and_basis.index(estimate_and_index)
-
-  def negative_estimate_index # TODO: add Blend rule
+  def negative_estimate_index
     estimates_ary.index { |i| i < 0 }
+    # Blend rule: taking minimal ji. ji is a part of non-basis indices so that estimates[ji] < 0
+    # est_and_basis = estimates.zip(basis) # last - unique. first - not unique
+    # negative_estimates = est_and_basis.select { |e_and_b| e_and_b.first < 0 }
+    # blend_estimate_and_index = negative_estimates.min_by { |est_and_b| est_and_b.last }
+    # result = est_and_basis.index(blend_estimate_and_index)
   end
   alias :j0 :negative_estimate_index
 
@@ -202,18 +200,27 @@ class LinearTaskWithBasis
     result
   end
 
-  def min_theta_with_index
-    # min returns [item, its index]
-    @min_theta_index ||= theta.each_with_index.min
+  def calculate_min_theta_index
+    # Blend rule: taking min theta with its index s so that basis_indexes[s] is min
+    # e.g. theta = [inf, 4, 4], Jb = [9, 8, 7]
+    basis_idx_for_min_thetas = basis_indexes.zip_indices.values_at(*min_thetas_indices) # => [[8, 1], [7, 2]]
+    basis_idx_for_min_thetas.min_by(&:first).last # => 2
   end
 
   def min_theta
-    min_theta_with_index.first
+    theta[min_theta_index]
   end
 
   def min_theta_index
-    min_theta_with_index.last
+    @min_theta_index ||= calculate_min_theta_index
   end
+
+  def min_thetas_indices
+    # e.g. theta = [inf, 4, 4], Jb = [9, 8, 7]
+    min_thetas = theta.find_all_with_indices(theta.min) # => [[4, 1], [4, 2]] min theta is 4 and it's on 1th and 2nd pos
+    min_thetas.map(&:last) # => [1, 2]
+  end
+  private :min_thetas_indices
 
   def description
     %Q(
