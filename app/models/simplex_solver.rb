@@ -27,6 +27,14 @@ class SimplexSolver
     new(task_with_plan)
   end
 
+  # Given task without plan,
+  # checks if constraints are compatible 
+  # and removes linear dependent constraints
+  #
+  def self.first_phase(task)
+
+  end
+
   def finished?
     END_STATUSES.values.include?(status)
   end
