@@ -22,6 +22,11 @@ describe Statuses::Simplex do
     it { should_not be_optimal }
     it { should_not be_finished }
     it { should_not be_step_completed }
+
+    describe '#finished?' do
+      it { Statuses::Simplex.from_code(:optimal).should be_finished }
+      it { Statuses::Simplex.from_code(:singular).should be_finished }
+    end
   end
 
   context "on bang methods" do

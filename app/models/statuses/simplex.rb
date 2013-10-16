@@ -10,5 +10,7 @@ module Statuses
                   :not_a_plan => 'given vector is not a plan'
 
     set_finish_statuses :singular, :unlimited, :optimal, :not_a_plan
+
+    set_initial_status :initialized
   end
 end

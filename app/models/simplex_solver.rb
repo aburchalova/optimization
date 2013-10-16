@@ -6,7 +6,7 @@ class SimplexSolver
   def initialize(task_with_plan)
     @initial_task = task_with_plan
     @task = task_with_plan
-    @status = SimplexSolverStatus[:initialized]
+    @status = Statuses::Simplex[:initialized]
     @logging = false
     self
   end

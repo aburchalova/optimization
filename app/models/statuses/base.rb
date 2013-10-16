@@ -4,7 +4,8 @@ module Statuses
 
     attr_accessor :code, :description, :data
 
-    def initialize(hash)
+    def initialize(hash = nil)
+      return @initial_status if !hash
       @code, @description, @data = hash.values_at(:code, :description, :data)
     end
 
@@ -20,7 +21,7 @@ module Statuses
     end
 
     module ClassMethods
-      attr_accessor :statuses, :finish_statuses
+      attr_accessor :statuses, :finish_statuses, :initial_status
 
       def set_statuses(hash)
         @statuses = hash
@@ -28,7 +29,11 @@ module Statuses
       end
 
       def set_finish_statuses(*list)
-        @finish_statuses = @statuses.slice(list)
+        @finish_statuses = @statuses.slice(*list)
+      end
+
+      def set_initial_status(code)
+        @initial_status = from_code(code)
       end
 
       # @param code [Symbol] snake case code

@@ -166,6 +166,7 @@ class LinearTaskWithBasis
   end
 
   # returns nil if sufficient for optimal
+  #
   def z
     @z ||= calculate_z
   end

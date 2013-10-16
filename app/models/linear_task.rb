@@ -11,10 +11,14 @@ class LinearTask < Struct.new(:a, :b, :c)
     super(*hash.values_at(*self.class.members))
   end
 
+  # Basis size, restrictions count
+  #
   def m
     a.size1
   end
 
+  # Variables count
+  #
   def n
     a.size2
   end
