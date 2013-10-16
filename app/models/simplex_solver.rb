@@ -1,42 +1,28 @@
 class SimplexSolver
-  STATUSES = {
-    :initialized => 'initialized',
-    :optimal => 'optimal',
-    :singular => 'matrix is singular',
-    :unlimited => 'unlimited',
-    :step_completed => 'step completed',
-    :incompatible => 'incompatible constraints'
-  }
-
-  END_STATUSES = STATUSES.slice(:singular, :unlimited, :optimal, :incompatible)
 
   attr_accessor :task, :status, :logging
+  delegate :optimal?, :finished?, :to => :status
 
   def initialize(task_with_plan)
     @initial_task = task_with_plan
     @task = task_with_plan
-    @status = STATUSES[:initialized]
+    @status = SimplexSolverStatus[:initialized]
     @logging = false
     self
   end
 
   def self.simple_init(a, b, c, plan, basis)
-    task1 = LinearTask.new(:a => a, :b => b, :c => c)
+    task = LinearTask.new(:a => a, :b => b, :c => c)
     x = BasisPlan.new(plan, basis)
-    task_with_plan = LinearTaskWithBasis.new(task1, x)
-    new(task_with_plan)
+    new(LinearTaskWithBasis.new(task, x))
   end
 
   # Given task without plan,
-  # checks if constraints are compatible 
+  # checks if constraints are compatible
   # and removes linear dependent constraints
   #
   def self.first_phase(task)
 
-  end
-
-  def finished?
-    END_STATUSES.values.include?(status)
   end
 
   def step
@@ -55,17 +41,7 @@ class SimplexSolver
     # new A is different from old by the s-th column
     # invert new A
     # start again with new A and new basis
-    if !task.basis_plan?
-      @status = STATUSES[:incompatible]
-    elsif task.singular_basis_matrix?
-      @status = STATUSES[:singular]
-    elsif task.sufficient_for_optimal? #sufficient for optimal
-      @status = STATUSES[:optimal]
-    elsif task.positive_z_index == nil # if z <= 0, target function is unlimited
-      @status = STATUSES[:unlimited]
-    else
-      @status = STATUSES[:step_completed]
-    end
+    calculate_and_change_status
     new_task = compose_new_task
     calculate_target_function_delta(new_task)
     log_stats
@@ -91,10 +67,6 @@ class SimplexSolver
 
   def iterate
     step until finished?
-  end
-
-  def optimal?
-    @status == STATUSES[:optimal]
   end
 
   def result
@@ -158,8 +130,16 @@ class SimplexSolver
     result
   end
 
+  def calculate_and_change_status
+    return @status.not_a_plan! if !task.basis_plan?
+    return @status.singular! if task.singular_basis_matrix?
+    return @status.optimal! if task.sufficient_for_optimal?
+    return @status.unlimited! if task.positive_z_index == nil # if z <= 0, target function is unlimited
+    @status.step_completed!
+  end
+
   def initial_status
-    return unless @status == STATUSES[:initialized]
+    return unless @status.initialized?
 %Q(
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       #{task.task.to_s}
@@ -167,12 +147,12 @@ class SimplexSolver
   end
 
   def target_delta
-    return unless @status == STATUSES[:step_completed]
+    return unless @status.step_completed?
     "Target function delta: #{@target_function_delta}\n"
   end
 
   def step_description
-    return if @status == STATUSES[:initialized]
+    return if @status.initialized?
     task.to_s
   end
 

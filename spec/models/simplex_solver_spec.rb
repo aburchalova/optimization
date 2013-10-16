@@ -79,7 +79,7 @@ describe SimplexSolver do
     it 'sets "optimal" status when all estimates positive' do
       solver.iterate
       solver.task.estimates_ary.should == [ 0.25, 0.5, 0, 6.5, 0 ]
-      solver.status.should == SimplexSolver::STATUSES[:optimal]
+      solver.status.should be_optimal
     end
   end
 
@@ -95,7 +95,7 @@ describe SimplexSolver do
       it { solver.result.should == [6, 4, 0, 0, 1, 3] }
     end
 
-    context "test incompatible" do
+    context "test not a plan" do
       let(:a) { Matrix.new([1, 0, 7.0/5, 0], [0, 1, -13.0/5, 2]) }
       let(:b) { Matrix.new([-1, 0]).transpose }
       let(:c) { Matrix.new([-4, -2, 1, -1]) } # ???
@@ -103,7 +103,7 @@ describe SimplexSolver do
       let(:basis) { [0, 1] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
 
-      it { solver.result.should == SimplexSolver::STATUSES[:incompatible] }
+      it { solver.result.should be_not_a_plan }
     end
 
     context "test3" do
