@@ -14,6 +14,10 @@ class Matrix
     self.new(*gsl_matrix.to_a)
   end
 
+  def self.new_vector(ary)
+    new( *ary.map { |i| [i] } )
+  end
+
   # TODO: more effecient implementation
   def method_missing(method, *args)
     return @gsl_matrix.send(method, *args) if @gsl_matrix.respond_to?(method)
@@ -73,6 +77,16 @@ class Matrix
     result = dup.submatrix(nil, first_col..first_col)
     cols.each do |col|
       result = result.horzcat submatrix(nil, col..col)
+    end
+    ::Matrix.from_gsl(result)
+  end
+
+  def cut_rows(rows)
+    rows = rows.dup
+    first_row = rows.shift
+    result = dup.submatrix(first_row..first_row, nil)
+    rows.each do |row|
+      result = result.vertcat submatrix(row..row, nil)
     end
     ::Matrix.from_gsl(result)
   end

@@ -96,11 +96,11 @@ class LinearTaskWithBasis
   alias :a_b_det :basis_det
 
   def c_b
-    @c_b ||= task.c.cut(plan.basis_indexes)
+    @c_b ||= task.c.cut_rows(plan.basis_indexes)
   end
 
   def c_n
-    @c_n ||= task.c.cut(plan.nonbasis_indexes)
+    @c_n ||= task.c.cut_rows(plan.nonbasis_indexes)
   end
 
   def target_function
@@ -112,7 +112,7 @@ class LinearTaskWithBasis
   end
 
   def potential_string
-    @potential_string ||= c_b * a_b_inv
+    @potential_string ||= c_b.transpose * a_b_inv
   end
 
   def potential_ary

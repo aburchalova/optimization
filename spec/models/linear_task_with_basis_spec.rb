@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LinearTaskWithBasis do
   let(:a) { Matrix.new([1, 1, 1, 1], [1, -1, 1, -2]) }
   let(:b) { Matrix.new([2, 0]).transpose }
-  let(:c) { Matrix.new([1, 2, 3, 4]) }
+  let(:c) { Matrix.new_vector([1, 2, 3, 4]) }
   let(:task) { LinearTask.new(:a => a, :b => b, :c => c) }
 
   let(:plan_vector) { Matrix.new([1, 1, 0, 0]).transpose }
@@ -48,12 +48,12 @@ describe LinearTaskWithBasis do
   end
 
   describe "c_b" do
-    let(:expected) { Matrix.new([1, 2]) }
+    let(:expected) { Matrix.new([1], [2]) }
     it { task_with_nonsingular_plan.c_b.should == expected }
   end
 
   describe "c_n" do
-    let(:expected) { Matrix.new([3, 4]) }
+    let(:expected) { Matrix.new([3], [4]) }
     it { task_with_nonsingular_plan.c_n.should == expected }
   end
 

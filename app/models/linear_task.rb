@@ -23,8 +23,12 @@ class LinearTask < Struct.new(:a, :b, :c)
     a.size2
   end
 
+  def c_string
+    @c_string ||= c.transpose
+  end
+
   def target_function(x_matrix)
-    (c * x_matrix).get(0)
+    (c_string * x_matrix).get(0)
   end
 
   def to_s

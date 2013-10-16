@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SimplexSolver do
   let(:a) { Matrix.new([1, 2, 0, -2, 4], [0, -1, 1, 4, -1]) }
   let(:b) { Matrix.new([2, 4]).transpose }
-  let(:c) { Matrix.new([2, 1, 3, 1, 6]) }
+  let(:c) { Matrix.new_vector([2, 1, 3, 1, 6]) }
   let(:task) { LinearTask.new(:a => a, :b => b, :c => c) }
 
   let(:plan_vector) { Matrix.new([2, 0, 4, 0, 0]).transpose }
@@ -87,7 +87,7 @@ describe SimplexSolver do
     context "test1" do
       let(:a) { Matrix.new([1, 3, 1, 0, 0, 0], [2, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 0], [3, 0, 0, 0, 0, 1]) }
       let(:b) { Matrix.new([18, 16, 5, 21]).transpose }
-      let(:c) { Matrix.new([2, 3, 0, 0, 0, 0]) }
+      let(:c) { Matrix.new_vector([2, 3, 0, 0, 0, 0]) }
       let(:plan_vector) { Matrix.new([0, 0, 18, 16, 5, 21]).transpose }
       let(:basis) { [2, 3, 4, 5] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
@@ -98,7 +98,7 @@ describe SimplexSolver do
     context "test not a plan" do
       let(:a) { Matrix.new([1, 0, 7.0/5, 0], [0, 1, -13.0/5, 2]) }
       let(:b) { Matrix.new([-1, 0]).transpose }
-      let(:c) { Matrix.new([-4, -2, 1, -1]) } # ???
+      let(:c) { Matrix.new_vector([-4, -2, 1, -1]) }
       let(:plan_vector) { Matrix.new([-1, 0, 0, 0]).transpose }
       let(:basis) { [0, 1] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
@@ -109,7 +109,7 @@ describe SimplexSolver do
     context "test3" do
       let(:a) { Matrix.new([1, 3, -1, 0, 2, 0], [0, -2, 4, 1, 0, 0], [0, -4, 3, 0, 8, 1]) }
       let(:b) { Matrix.new([7, 12, 10]).transpose }
-      let(:c) { Matrix.new([0, -1, 3, 0, -2, 0]) } # ???
+      let(:c) { Matrix.new_vector([0, -1, 3, 0, -2, 0]) }
       let(:plan_vector) { Matrix.new([7, 0, 0, 12, 0, 10]).transpose }
       let(:basis) { [0, 3, 5] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
@@ -121,7 +121,7 @@ describe SimplexSolver do
     context "class task1" do
       let(:a) { Matrix.new([1, 0, 0, 1, -3, 4, 0, 1, 4], [2, 1, 2, 1, -5, 2, 0, -5, 2], [1, 1, 1, 1, 1, 1, 1, 1, 1]) }
       let(:b) { Matrix.new([1, 8, 6]).transpose }
-      let(:c) { Matrix.new([-2, 2, 1, 3, 5, 10, 15, 4, 6]) }
+      let(:c) { Matrix.new_vector([-2, 2, 1, 3, 5, 10, 15, 4, 6]) }
       let(:plan_vector) { Matrix.new([0, 3, 2, 1, 0, 0, 0, 0, 0]).transpose }
       let(:basis) { [1, 2, 3] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
@@ -132,7 +132,7 @@ describe SimplexSolver do
     context "class task2" do
       let(:a) { Matrix.new([2, 0, 1, -1, 0, 1, 1, -2, 0], [-1, 3, 1, -1, 1, 2, 0, 4, 0], [0, 4, 2, 0, 0, 1, 0, 5, 1]) }
       let(:b) { Matrix.new([4, 3, 5]).transpose }
-      let(:c) { Matrix.new([4, 2, 1, -2, 0, 3, 2, -1, 0]) }
+      let(:c) { Matrix.new_vector([4, 2, 1, -2, 0, 3, 2, -1, 0]) }
       let(:plan_vector) { Matrix.new([0, 0, 0, 0, 3, 0, 4, 0, 5]).transpose }
       let(:basis) { [4, 6, 8] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
