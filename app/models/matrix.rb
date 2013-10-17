@@ -97,4 +97,13 @@ class Matrix
     n.times { rows << items.shuffle }
     Matrix.new(*rows)
   end
+
+  # Removes row #i from the matrix
+  # Returns new matrix
+  #
+  def remove_row(i)
+    rows_ary = to_a
+    rows_ary.delete_at(i)
+    Matrix.new(*rows_ary)
+  end
 end

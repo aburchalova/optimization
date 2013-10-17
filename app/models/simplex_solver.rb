@@ -74,6 +74,11 @@ class SimplexSolver
     optimal? && task.x_ary || status
   end
 
+  def result_plan
+    iterate
+    optimal? && task.plan || status
+  end
+
   def new_x
     result = Array.new(task.n, 0)
     fill_basis_components(result)

@@ -5,7 +5,8 @@ module Statuses
     set_statuses  :initialized => 'initialized',
                   :incompatible => 'incompatible constraints',
                   :linear_dependent => 'linear dependent constraints',
-                  :got_task => 'finished successfully'
+                  :got_task => 'finished successfully',
+                  :removed_art_variable => 'removed artificial variable'
 
     set_finish_statuses :incompatible, :got_task
 
