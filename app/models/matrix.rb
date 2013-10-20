@@ -37,7 +37,6 @@ class Matrix
     GSL::Matrix.respond_to?(method_name) || super
   end
 
-  # TODO: remove to_a because of precision
   def to_s
     gsl_matrix.to_s
   end
@@ -74,7 +73,7 @@ class Matrix
     # Matrix.from_gsl(result)
     cols = cols.dup
     first_col = cols.shift
-    result = dup.submatrix(nil, first_col..first_col)
+    result = clone.submatrix(nil, first_col..first_col)
     cols.each do |col|
       result = result.horzcat submatrix(nil, col..col)
     end
@@ -105,5 +104,32 @@ class Matrix
     rows_ary = to_a
     rows_ary.delete_at(i)
     Matrix.new(*rows_ary)
+  end
+
+  def colcount
+    gsl_matrix.size2
+  end
+
+  def rowcount
+    gsl_matrix.size1
+  end
+
+  # Negotiates row #i
+  #
+  def neg_row(i)
+    (0...colcount).each do |col_idx|
+      neg(i, col_idx)
+    end
+  end
+
+  def neg(row_idx, col_idx)
+    set([row_idx, col_idx], -get(row_idx, col_idx))
+  end
+
+  # Negotiates item in matrix at [row_idx, col_idx]
+  #
+  # @param matrix [GSL::Matrix]
+  def self.neg(matrix, row_idx, col_idx)
+    matrix.set([row_idx, col_idx], -matrix.get(row_idx, col_idx))
   end
 end

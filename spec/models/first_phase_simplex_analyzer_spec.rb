@@ -7,89 +7,58 @@ describe FirstPhaseSimplexAnalyzer do
   let(:task) { LinearTask.new(:a => a, :b => b, :c => c) }
 
   subject(:analyzer) { FirstPhaseSimplexAnalyzer.new(task) }
-  it { analyzer.status.should be_initialized }
 
-  describe "#artificial_task" do
-    let(:new_width) { 7 }
-    let(:widened_matrix) { Matrix.new([1, 2, 0, -2, 4, 1, 0], [0, -1, 1, 4, -1, 0, 1]) }
+  describe '#initialize' do
+    it { analyzer.status.should be_initialized }
+  end
 
-    subject(:new_task) { analyzer.artificial_task }
+  let(:opt_plan) do
+    BasisPlan.new(Matrix.new_vector([2.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0]), [0, 2])
+  end
+  before { analyzer.stub(:widened_optimal_plan => opt_plan) }
 
-    it "widens matrix" do
-      new_task.a.should == widened_matrix
-    end
-
-    let(:widened_c) { Matrix.new_vector([0, 0, 0, 0, 0, -1, -1]) }
-    it "widens c" do
-      new_task.c.should == widened_c
+  describe "#compatible_constraints?" do
+    it "is true if artificial vars sum == 0" do
+      analyzer.compatible_constraints?.should == true
     end
   end
 
-  describe "#artificial_plan" do
-    let(:expected_plan) { Matrix.new_vector([0, 0, 0, 0, 0, 2, 4]).gsl_matrix }
-    let(:expected_basis) { [5, 6] }
+  describe "#widened_optimal_plan_basis" do
+    it { analyzer.widened_optimal_plan_basis.should == [0, 2] }
+  end
 
-    it "contains zeros on real variables and b coeffs on artificial" do
-      analyzer.artificial_plan.x.should == expected_plan
+  describe "#prepare_working_task" do
+    let(:b) { Matrix.new_vector([-2, 4]).gsl_matrix }
+    it "inverts signs of rows" do
+      task.should_receive(:invert_neg_rows)
+      analyzer.prepare_working_task
+    end
+  end
+
+  context "after composing working task" do
+
+    before do
+      analyzer.solve_artificial_task
+      analyzer.prepare_working_task
     end
 
-    it "basis contains only artificial variables" do
-      analyzer.artificial_plan.basis_indexes.should == expected_basis
-    end
-  end
-
-  describe "#artificial_task_result" do
-    let(:expected_result) { [2.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0] }
-    it { analyzer.artificial_task_result.should == expected_result }
-  end
-
-  describe "#initial_task_has_plan?" do
-    it("is true if artificial vars sum == 0") { analyzer.initial_task_has_plan?.should == true }
-  end
-
-  describe "#artificial_task_result_basis" do
-    it { analyzer.artificial_task_result_basis.should == [0, 2] }
-  end
-
-  describe "#initial_task_basis_plan" do
-    context "when no artificial indices in result basis" do
-      let(:real_result_part) { [2.0, 0.0, 4.0, 0.0, 0.0] }
-
-      it "takes part of artificial result" do
-        analyzer.initial_task_basis_plan.should == BasisPlan.new(real_result_part, [0, 2])
-      end
-    end
-
-    context "when artificial indices in result basis" do
-      context "when no linear dependend constraints" do
-        it "removes artificial vars"
-      end
-
-      context "when linear dependend constraints" do
-        let(:a) { Matrix.new([1, 2, 0, -2, 4], [1, 2, 0, -2, 4], [1, 1, 1, 1, 1]) }
-        let(:b) { Matrix.new_vector([2, 2, 1]).gsl_matrix }
-        let(:c) { Matrix.new_vector([2, 1, 3, 1, 6, 1]) }
-        let(:task) { LinearTask.new(:a => a, :b => b, :c => c) }
-        subject(:analyzer) { FirstPhaseSimplexAnalyzer.new(task) }
-
-        it "decreases basis size" do
-          analyzer.initial_task_basis_plan.basis_indexes.length.should == 2
-        end
-
-        it "removes linear dependent constraint" do
-          analyzer.initial_task_basis_plan
-          analyzer.result_task.b.should == Matrix.new_vector([2, 1]).gsl_matrix
-        end
-
-        it "leaves only real variables" do
-          analyzer.initial_task_basis_plan
-          analyzer.result_task.a.should == Matrix.new([1, 2, 0, -2, 4], [1, 1, 1, 1, 1])
+    describe "#analyze" do
+      context "when no artificial indices in result basis" do
+        let(:real_result_part) { [2.0, 0.0, 4.0, 0.0, 0.0] }
+        let(:vector) { Matrix.new(real_result_part).transpose }
+        it "takes part of artificial result" do
+          analyzer.analyze
+          analyzer.basis_plan.should == BasisPlan.new(vector, [0, 2])
         end
       end
+
+      # let(:remover) { double(:ArtificialVariableRemover) } TODO: remove looping because of double doesn't do anything
+      # it "calls artificial variable remover" do
+      #   remover.stub(:try_remove => )
+      #   ArtificialVariableRemover.should_receive(:new).with(analyzer).and_return remover
+      #   remover.should_receive(:try_remove).and_return nil
+      #   analyzer.analyze
+      # end
     end
-  end
-
-  describe "#analyze" do
-
   end
 end

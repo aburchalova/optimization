@@ -22,4 +22,29 @@ class Float
   def ==(other)
     (self <=> other) == 0
   end
+
+  def neg?
+    self < 0
+  end
+
+  def pos?
+    self > 0
+  end
+
+  def nonneg?
+    self >= 0
+  end
+
+  def nonpos?
+    self <= 0
+  end
+
+  def zero?
+    self == 0
+  end
+
+  def nonzero?
+    self != 0
+  end
+
 end

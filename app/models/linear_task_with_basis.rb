@@ -25,7 +25,7 @@ class LinearTaskWithBasis
   # @param x [Matrix] solution vector
   # @return [true, false] if x is task plan
   #
-  def plan? # TODO: change code to work with plan not matrix but basis plan. add delegation
+  def plan?
     # because right-side arg can only be gsl matrix
     task.a * plan.x == task.b &&
       plan.x.isnonneg?
@@ -107,6 +107,8 @@ class LinearTaskWithBasis
     task.target_function(plan.x)
   end
 
+  # M vector
+  #
   def potential_vector
     @potential_vector ||= potential_string.transpose
   end
@@ -273,5 +275,9 @@ class LinearTaskWithBasis
   Minimal theta index:
   #{min_theta_index}
     )
+  end
+
+  def clone
+    LinearTaskWithBasis.new(task.clone, plan.clone)
   end
 end

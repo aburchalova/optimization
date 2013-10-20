@@ -92,7 +92,7 @@ describe SimplexSolver do
       let(:basis) { [2, 3, 4, 5] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
 
-      it { solver.result.should == [6, 4, 0, 0, 1, 3] }
+      it { solver.result_ary.should == [6, 4, 0, 0, 1, 3] }
     end
 
     context "test not a plan" do
@@ -114,9 +114,8 @@ describe SimplexSolver do
       let(:basis) { [0, 3, 5] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
 
-      it { solver.result.should == [0, 4, 5, 0, 0, 11] }
+      it { solver.result_ary.should == [0, 4, 5, 0, 0, 11] }
     end
-    # TODO: more tests
 
     context "class task1" do
       let(:a) { Matrix.new([1, 0, 0, 1, -3, 4, 0, 1, 4], [2, 1, 2, 1, -5, 2, 0, -5, 2], [1, 1, 1, 1, 1, 1, 1, 1, 1]) }
@@ -126,7 +125,7 @@ describe SimplexSolver do
       let(:basis) { [1, 2, 3] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
 
-      it { solver.result.should == [0, 0, 3.75, 0, 0, 0.25, 2, 0, 0] }
+      it { solver.result_ary.should == [0, 0, 3.75, 0, 0, 0.25, 2, 0, 0] }
     end
 
     context "class task2" do
@@ -137,7 +136,7 @@ describe SimplexSolver do
       let(:basis) { [4, 6, 8] }
       let(:solver) { SimplexSolver.simple_init(a, b, c, plan_vector, basis) }
 
-      it { solver.result.should == [2, 0, 0, 5, 0, 5, 0, 0, 0] }
+      it { solver.result_ary.should == [2, 0, 0, 5, 0, 5, 0, 0, 0] }
     end
   end
 end

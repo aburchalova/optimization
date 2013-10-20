@@ -47,4 +47,8 @@ class BasisPlan < Struct.new(:x, :basis_indexes)
   def positive_x_b?
     x_b.all? { |item| item > 0 }#&0.method(:<) # positive
   end
+
+  def clone
+    BasisPlan.new(:x => x.clone, :basis_indexes => basis_indexes.dup)
+  end
 end

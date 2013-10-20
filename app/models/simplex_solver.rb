@@ -22,7 +22,7 @@ class SimplexSolver
   # and removes linear dependent constraints
   #
   def self.first_phase(task)
-
+    #TODO: maybe add
   end
 
   def step
@@ -71,12 +71,18 @@ class SimplexSolver
 
   def result
     iterate
-    optimal? && task.x_ary || status
+    status.data = optimal? ? task.plan : nil 
+    status
   end
 
   def result_plan
     iterate
-    optimal? && task.plan || status
+    optimal? && task.plan || nil
+  end
+
+  def result_ary
+    iterate
+    optimal? && task.plan.x_ary || nil
   end
 
   def new_x
