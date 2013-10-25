@@ -90,4 +90,18 @@ describe LinearTaskWithBasis do
       task_with_nonsingular_plan.z #retrieves inverted_basis_matrix
     end
   end
+
+  # describe '#target_function_delta' do
+  #   let(:old_plan) { BasisPlan.new(Matrix.new([1, 2, 0, 0]).transpose, [0, 1]) }
+  #   let(:new_plan) { BasisPlan.new(Matrix.new([0, 4, 3, 0]).transpose, [2, 1]) }
+  #   let(:old_task) { LinearTaskWithBasis.new(task, old_plan) }
+  #   let(:new_task) { LinearTaskWithBasis.new(task, new_plan) }
+
+  #   it 'calculates target funcion change', :focus do
+  #     old_target = old_task.target_function
+  #     new_target = new_task.target_function
+  #     old_task.target_function_delta(new_plan.x).should == new_target - old_target
+  #   end
+    
+  # end
 end

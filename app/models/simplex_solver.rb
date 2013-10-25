@@ -1,8 +1,6 @@
 class SimplexSolver
   include Solver
 
-
-
   # Given task without plan,
   # checks if constraints are compatible
   # and removes linear dependent constraints

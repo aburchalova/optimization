@@ -35,10 +35,6 @@ class LinearTask < Struct.new(:a, :b, :c)
     c.to_a.flatten
   end
 
-  def target_function(x_matrix)
-    (c_string * x_matrix).get(0)
-  end
-
   def to_s
     %Q(
       A = #{m} by #{n} matrix

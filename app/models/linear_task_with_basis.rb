@@ -5,20 +5,8 @@ require 'delegate'
 # +plan+ is BasisPlan
 #
 class LinearTaskWithBasis
-  attr_accessor :task, :plan
-  attr_writer :inverted_basis_matrix
-  delegate :m, :n, :a, :b, :c, :to => :task
-  delegate :basis_indexes, :x_ary, :to => :plan
+  include SolverTask
 
-  def initialize(task, plan)
-    @task, @plan = task, plan
-  end
-
-  # plan_vect is array, makes matrix
-  #
-  def with(plan_vect, basis_indices)
-    ::LinearTaskWithBasis.new(task, BasisPlan.new(plan_vect, basis_indices))
-  end
 
   # TODO: add memoization?
   #
@@ -59,42 +47,6 @@ class LinearTaskWithBasis
     !singular_basis_matrix? && estimates_ary.all? { |i| i >= 0 }
   end
 
-  # def target_function_unlimited?
-  #   !sufficient_for_optimal? && nonsingular_plan?
-  # end
-
-  # def neccesary
-  def basis_matrix
-    @a_b ||= task.a.cut(plan.basis_indexes)
-  end
-  alias :a_b :basis_matrix
-
-  def singular_basis_matrix?
-    a_b.det.zero?
-  end
-
-  def inverted_basis_matrix
-    @inverted_basis_matrix ||= a_b.invert
-  end
-
-  # Ability to pass already calculated matrix for optimization
-  #
-  def inverted_basis_matrix=(matrix)
-    @inverted_basis_matrix ||= matrix
-  end
-  alias :a_b_inv :inverted_basis_matrix
-  alias :a_b_inv= :inverted_basis_matrix=
-
-  def nonbasis_matrix
-    @a_n ||= task.a.cut(plan.nonbasis_indexes)
-  end
-  alias :a_n :nonbasis_matrix
-
-  def basis_det
-    @basis_det ||= basis_matrix.det
-  end
-  alias :a_b_det :basis_det
-
   def c_b
     @c_b ||= task.c.cut_rows(plan.basis_indexes)
   end
@@ -104,7 +56,7 @@ class LinearTaskWithBasis
   end
 
   def target_function
-    task.target_function(plan.x)
+    (task.c_string * plan.x).get(0)
   end
 
   # M vector
@@ -140,10 +92,6 @@ class LinearTaskWithBasis
     estimates_ary.values_at(*plan.nonbasis_indexes)
   end
 
-  def estimates_n_transpose
-    Matrix.new(estimates_n).transpose
-  end
-
   def negative_estimate_index
     estimates_ary.index { |i| i < 0 }
     # Blend rule: taking minimal ji. ji is a part of non-basis indices so that estimates[ji] < 0
@@ -154,10 +102,12 @@ class LinearTaskWithBasis
   end
   alias :j0 :negative_estimate_index
 
-  # plan is delta x
+  # @param new_x [Matrix] new plan
   #
-  def target_function_delta
-    - (estimates_n * plan.x_n).get(0)
+  # doesn't work
+  def target_function_delta(new_x)
+    est_string = Matrix.new(estimates_ary)
+    - (est_string * (new_x - plan.x)).get(0)
   end
 
   def calculate_z
