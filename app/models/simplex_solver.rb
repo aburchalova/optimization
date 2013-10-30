@@ -1,14 +1,6 @@
 class SimplexSolver
   include Solver
 
-  # Given task without plan,
-  # checks if constraints are compatible
-  # and removes linear dependent constraints
-  #
-  def self.first_phase(task)
-    #TODO: maybe add
-  end
-
     # inverse matrix without inverter on step 1
     # potentials vector
     # estimates
@@ -31,5 +23,14 @@ class SimplexSolver
     return @status.optimal! if task.sufficient_for_optimal?
     return @status.unlimited! if task.positive_z_index == nil # if z <= 0, target function is unlimited
     @status.step_completed!
+  end
+
+  def initialize(task_with_plan)
+    @initial_task = task_with_plan
+    @task = task_with_plan
+    @status = Statuses::Simplex[:initialized]
+    @new_task_composer_class = NewTaskComposers::Simplex
+    @logging = false
+    self
   end
 end

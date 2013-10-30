@@ -1,18 +1,11 @@
 module Solver
   extend ActiveSupport::Concern
 
-  include NewTaskComposing
+  # include NewTaskComposing
 
-  attr_accessor :task, :status, :logging
+  attr_accessor :task, :status, :new_task_composer_class, :logging
   delegate :optimal?, :finished?, :to => :status
-
-  def initialize(task_with_plan)
-    @initial_task = task_with_plan
-    @task = task_with_plan
-    @status = Statuses::Simplex[:initialized]
-    @logging = false
-    self
-  end
+  delegate :new_plan, :new_basis, :var_to_add, :var_to_remove, :to => :new_task_composer
 
   def step
     calculate_and_change_status
@@ -21,6 +14,14 @@ module Solver
     log_stats
     set_new_task(new_task)
     self
+  end
+
+  def new_task_composer #TODO: add memoisation in task composer and resetting in setting new task?
+    new_task_composer_class.new(task)
+  end
+
+  def compose_new_task #TODO: refactor this crap and add file loading by name
+    finished? ? task : new_task_composer.compose
   end
 
   def calculate_and_change_status

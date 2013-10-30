@@ -40,8 +40,8 @@ describe SimplexSolver do
     end
   end
 
-  describe 'new_x' do
-    it { solver.new_x.should == Matrix.new([0, 0, 4.5, 0, 0.5]).transpose }
+  describe 'new_plan' do
+    it { solver.new_plan.should == Matrix.new([0, 0, 4.5, 0, 0.5]).transpose }
   end
 
   describe 'new_basis' do
@@ -53,8 +53,8 @@ describe SimplexSolver do
     end
 
     it 'inserts new index on the place of old index' do
-      new_col_index = solver.new_basis.index(solver.new_basis_column)
-      gone_col_index = basis.index(solver.new_nonbasis_column)
+      new_col_index = solver.new_basis.index(solver.var_to_add)
+      gone_col_index = basis.index(solver.var_to_remove)
       new_col_index.should == gone_col_index
     end
   end

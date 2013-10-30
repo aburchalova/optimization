@@ -2,13 +2,14 @@
 # LinearTask for double simplex method
 #
 module SolverTask
-  attr_accessor :task, :plan, :plan_restrictions
+  attr_accessor :task, :plan, :sign_restrictions
   attr_writer :inverted_basis_matrix
   delegate :m, :n, :a, :b, :c, :to => :task
   delegate :basis_indexes, :x_ary, :to => :plan
 
-  def initialize(task, plan)
+  def initialize(task, plan, sign_restrictions = nil)
     @task, @plan = task, plan
+    @sign_restrictions = sign_restrictions || ->(x) { x.isnonneg? }
   end
 
   # plan_vect is array, makes matrix
@@ -47,4 +48,8 @@ module SolverTask
     @basis_det ||= basis_matrix.det
   end
   alias :a_b_det :basis_det
+
+  def sufficient_for_optimal?
+    !singular_basis_matrix?
+  end
 end

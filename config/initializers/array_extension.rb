@@ -1,6 +1,7 @@
 class Array
-  def find_all_with_indices(value)
-    each_with_index.find_all { |a, i| a == value }
+  def find_all_with_indices(value = nil, &block)
+    comparator = value ? proc { |a, i| a == value } : proc { |a, i| block.call(a) }
+    each_with_index.find_all(&comparator)
   end
 
   def zip_indices

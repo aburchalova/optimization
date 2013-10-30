@@ -3,6 +3,11 @@ require 'delegate'
 # x should be gsl VERTICAL matrix
 # 
 class BasisPlan < Struct.new(:x, :basis_indexes)
+
+  def self.simple_init(x_ary, basis_indexes)
+    self.new(Matrix.new(x_ary).transpose, basis_indexes)
+  end
+
   def method_missing(method, *args)
     return x.send(method, *args) if x.respond_to?(method)
     super

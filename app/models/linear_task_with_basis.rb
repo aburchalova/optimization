@@ -7,16 +7,13 @@ require 'delegate'
 class LinearTaskWithBasis
   include SolverTask
 
-
-  # TODO: add memoization?
   #
   # @param x [Matrix] solution vector
   # @return [true, false] if x is task plan
   #
   def plan?
     # because right-side arg can only be gsl matrix
-    task.a * plan.x == task.b &&
-      plan.x.isnonneg?
+    task.a * plan.x == task.b && sign_restrictions.call(plan.x)
   end
 
   # number of basis indexes = equations number
@@ -26,7 +23,8 @@ class LinearTaskWithBasis
   def basis_plan?
     plan? &&
       plan.basis_indexes.length == task.m &&
-      basis_det != 0
+      basis_det != 0 &&
+      plan.x_n.all?(&:zero?)
   end
 
   def nonsingular_plan?
@@ -44,7 +42,7 @@ class LinearTaskWithBasis
   end
 
   def sufficient_for_optimal?
-    !singular_basis_matrix? && estimates_ary.all? { |i| i >= 0 }
+    super && estimates_ary.all? { |i| i >= 0 }
   end
 
   def c_b
@@ -102,12 +100,12 @@ class LinearTaskWithBasis
   end
   alias :j0 :negative_estimate_index
 
-  # @param new_x [Matrix] new plan
+  # @param new_plan [Matrix] new plan
   #
   # doesn't work
-  def target_function_delta(new_x)
+  def target_function_delta(new_plan)
     est_string = Matrix.new(estimates_ary)
-    - (est_string * (new_x - plan.x)).get(0)
+    - (est_string * (new_plan - plan.x)).get(0)
   end
 
   def calculate_z
