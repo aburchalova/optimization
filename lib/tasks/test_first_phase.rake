@@ -23,7 +23,7 @@ namespace :first_phase do
 
     analyzer.analyze
     puts "\n-------------------------\npassing result to solver...\n-------------------------"
-    solver = SimplexSolver.new(analyzer.result_task_with_basis)
+    solver = Solvers::Simplex.new(analyzer.result_task_with_basis)
     puts solver
     solver.logging = true
     solver.iterate

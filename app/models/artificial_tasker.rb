@@ -21,7 +21,7 @@ class ArtificialTasker
   #
   def solve
     find_first_plan
-    solver = SimplexSolver.new(task_with_plan)
+    solver = Solvers::Simplex.new(task_with_plan)
     solver.result
   end
 

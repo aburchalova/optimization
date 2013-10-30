@@ -10,7 +10,7 @@ namespace :simplex do
     x = BasisPlan.new(plan_vector, basis)
     task_with_plan = LinearTaskWithBasis.new(task, x)
 
-    solver = SimplexSolver.new(task_with_plan)
+    solver = Solvers::Simplex.new(task_with_plan)
     puts solver
     solver.logging = true
     solver.iterate
@@ -27,7 +27,7 @@ namespace :simplex do
     x = BasisPlan.new(plan_vector, basis)
     task_with_plan = LinearTaskWithBasis.new(task, x)
 
-    solver = SimplexSolver.new(task_with_plan)
+    solver = Solvers::Simplex.new(task_with_plan)
     puts solver
     solver.logging = true
     solver.iterate
@@ -53,7 +53,7 @@ namespace :simplex do
     x = BasisPlan.new(plan_vector, basis)
     task_with_plan = LinearTaskWithBasis.new(task, x)
 
-    solver = SimplexSolver.new(task_with_plan)
+    solver = Solvers::Simplex.new(task_with_plan)
     puts solver
     solver.logging = true
     solver.iterate
