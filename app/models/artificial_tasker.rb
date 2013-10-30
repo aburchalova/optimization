@@ -13,7 +13,7 @@ class ArtificialTasker
   end
 
   def task_with_plan
-    @task_with_basis ||= LinearTaskWithBasis.new task, @first_plan
+    @task_with_basis ||= Tasks::Simplex.new task, @first_plan
   end
 
   # Processes all shit

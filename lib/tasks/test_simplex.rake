@@ -8,7 +8,7 @@ namespace :simplex do
     plan_vector = Matrix.new([2, 0, 4, 0, 0]).transpose
     basis = [2, 0]
     x = BasisPlan.new(plan_vector, basis)
-    task_with_plan = LinearTaskWithBasis.new(task, x)
+    task_with_plan = Tasks::Simplex.new(task, x)
 
     solver = Solvers::Simplex.new(task_with_plan)
     puts solver
@@ -25,7 +25,7 @@ namespace :simplex do
     plan_vector = Matrix.new([0, 0, 264, 136, 266]).transpose
     basis = [2, 3, 4]
     x = BasisPlan.new(plan_vector, basis)
-    task_with_plan = LinearTaskWithBasis.new(task, x)
+    task_with_plan = Tasks::Simplex.new(task, x)
 
     solver = Solvers::Simplex.new(task_with_plan)
     puts solver
@@ -51,7 +51,7 @@ namespace :simplex do
     # basis = [4, 6, 8]
 
     x = BasisPlan.new(plan_vector, basis)
-    task_with_plan = LinearTaskWithBasis.new(task, x)
+    task_with_plan = Tasks::Simplex.new(task, x)
 
     solver = Solvers::Simplex.new(task_with_plan)
     puts solver

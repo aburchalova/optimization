@@ -21,7 +21,7 @@ class FirstPhaseSimplexAnalyzer
 
   #real_task [LinearTask] is initially similar to the artificial task, but maybe with some constraints excluded.
   #real_task_basis contains working basis indices, initially - artificial task result basis indices
-  #result_task_with_basis [LinearTaskWithBasis] contains task that's appropriate for simplex method
+  #result_task_with_basis [Tasks::Simplex] contains task that's appropriate for simplex method
   #result_task [LinearTask] as task but with removed constraints
 
   # @param task [LinearTask]
@@ -50,7 +50,7 @@ class FirstPhaseSimplexAnalyzer
   def try_compose_real_task_with_plan
     if compatible_constraints?
       @basis_plan = find_initial_task_basis_plan
-      task_with_plan = LinearTaskWithBasis.new result_task, basis_plan
+      task_with_plan = Tasks::Simplex.new result_task, basis_plan
     else
       status.incompatible!
     end

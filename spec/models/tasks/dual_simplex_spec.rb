@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LinearTaskWithDualBasis do
+describe Tasks::DualSimplex do
   let(:a) do
     Matrix.new(
       [0, 1, 1, 2, 4, -1, 0],
@@ -13,13 +13,13 @@ describe LinearTaskWithDualBasis do
   let(:task) { LinearTask.new(:a => a, :b => b, :c => c) }
   let(:bas_ind) { [2, 6, 0] }
   let(:plan) { BasisPlan.simple_init([1, 1, 1], bas_ind) }
-  subject(:dual_task) { LinearTaskWithDualBasis.new(task, plan) }
+  subject(:dual_task) { Tasks::DualSimplex.new(task, plan) }
 
   describe '.plan?' do
     it { dual_task.plan?.should be_true }
 
     let(:not_plan) { BasisPlan.simple_init([1, 1, 5], [2, 6, 1]) }
-    it { LinearTaskWithDualBasis.new(task, not_plan).plan?.should be_false }
+    it { Tasks::DualSimplex.new(task, not_plan).plan?.should be_false }
   end
 
   describe '.basis_plan?' do

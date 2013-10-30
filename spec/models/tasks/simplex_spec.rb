@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LinearTaskWithBasis do
+describe Tasks::Simplex do
   let(:a) { Matrix.new([1, 1, 1, 1], [1, -1, 1, -2]) }
   let(:b) { Matrix.new([2, 0]).transpose }
   let(:c) { Matrix.new_vector([1, 2, 3, 4]) }
@@ -9,7 +9,7 @@ describe LinearTaskWithBasis do
   let(:plan_vector) { Matrix.new([1, 1, 0, 0]).transpose }
   let(:x) { BasisPlan.new(plan_vector, [0, 1]) }
 
-  let(:task_with_nonsingular_plan) { LinearTaskWithBasis.new(task, x) }
+  let(:task_with_nonsingular_plan) { Tasks::Simplex.new(task, x) }
 
   describe ".plan?" do
     let(:not_plan_vector) { Matrix.new([1, 2, 0, 0]).transpose }
@@ -17,8 +17,8 @@ describe LinearTaskWithBasis do
 
     let(:wrong_size_plan) { BasisPlan.new(Matrix.new([1, 2, 0]).transpose, []) }
 
-    let(:task_with_not_plan) { LinearTaskWithBasis.new(task, not_plan) }
-    let(:task_with_wrong_size_vector) { LinearTaskWithBasis.new(task, wrong_size) }
+    let(:task_with_not_plan) { Tasks::Simplex.new(task, not_plan) }
+    let(:task_with_wrong_size_vector) { Tasks::Simplex.new(task, wrong_size) }
 
     it { task_with_nonsingular_plan.plan?.should be_true }
     it { task_with_not_plan.plan?.should be_false }
@@ -27,7 +27,7 @@ describe LinearTaskWithBasis do
 
   describe "basis_plan?" do
     let(:nonbasis_plan) { BasisPlan.new(plan_vector, [0, 1, 2]) }
-    let(:task_with_non_basis_plan) { LinearTaskWithBasis.new(task, nonbasis_plan) }
+    let(:task_with_non_basis_plan) { Tasks::Simplex.new(task, nonbasis_plan) }
 
     it { task_with_non_basis_plan.basis_plan?.should be_false }
     it { task_with_nonsingular_plan.basis_plan?.should be_true }
@@ -94,8 +94,8 @@ describe LinearTaskWithBasis do
   # describe '#target_function_delta' do
   #   let(:old_plan) { BasisPlan.new(Matrix.new([1, 2, 0, 0]).transpose, [0, 1]) }
   #   let(:new_plan) { BasisPlan.new(Matrix.new([0, 4, 3, 0]).transpose, [2, 1]) }
-  #   let(:old_task) { LinearTaskWithBasis.new(task, old_plan) }
-  #   let(:new_task) { LinearTaskWithBasis.new(task, new_plan) }
+  #   let(:old_task) { Tasks::Simplex.new(task, old_plan) }
+  #   let(:new_task) { Tasks::Simplex.new(task, new_plan) }
 
   #   it 'calculates target funcion change', :focus do
   #     old_target = old_task.target_function

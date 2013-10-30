@@ -9,7 +9,7 @@ describe Solvers::Simplex do
   let(:plan_vector) { Matrix.new([2, 0, 4, 0, 0]).transpose }
   let(:basis) { [2, 0] }
   let(:x) { BasisPlan.new(plan_vector, basis) }
-  let(:task_with_plan) { LinearTaskWithBasis.new(task, x) }
+  let(:task_with_plan) { Tasks::Simplex.new(task, x) }
 
   subject(:solver) { Solvers::Simplex.new(task_with_plan) }
 
