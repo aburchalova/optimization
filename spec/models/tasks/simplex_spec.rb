@@ -104,4 +104,32 @@ describe Tasks::Simplex do
   #   end
     
   # end
+
+  context "when testing sign restrictions" do
+    let(:t) { task_with_nonsingular_plan }
+
+    describe 'lower_sign_restriction_apply?' do
+      let(:task1) { t.with_restrictions(:lower => [1, 1, 1, 0]) }
+      it { task1.lower_sign_restriction_apply?.should be_false }
+
+      let(:task2) { t.with_restrictions(:lower => [1, 1, 0, 0]) }
+      it { task2.lower_sign_restriction_apply?.should be_true }
+    end
+
+    describe 'upper_sign_restriction_apply?' do
+      let(:task1) { t.with_restrictions(:upper => [1, 1, 1, 0]) }
+      it { task1.upper_sign_restriction_apply?.should be_true }
+
+      let(:task2) { t.with_restrictions(:upper => [1, 0, 0, 0]) }
+      it { task2.upper_sign_restriction_apply?.should be_false }
+    end
+
+    describe 'sign_restrictions_apply?' do
+      let(:task1) { t.with_restrictions(:lower => [1, 1, 0, 0], :upper => [1, 1, 1, 0]) }
+      it { task1.upper_sign_restriction_apply?.should be_true }
+
+      let(:task2) { t.with_restrictions(:lower => [1, 1, 0, 0], :upper => [1, 0, 0, 0]) }
+      it { task2.upper_sign_restriction_apply?.should be_false }
+    end
+  end
 end

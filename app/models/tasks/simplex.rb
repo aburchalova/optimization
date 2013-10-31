@@ -13,7 +13,7 @@ module Tasks
     #
     def plan?
       # because right-side arg can only be gsl matrix
-      task.a * plan.x == task.b && sign_restrictions.call(plan.x)
+      task.a * plan.x == task.b && sign_restrictions_apply?(plan.x)
     end
 
     # number of basis indexes = equations number

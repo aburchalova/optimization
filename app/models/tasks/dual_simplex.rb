@@ -7,7 +7,7 @@ module Tasks
     # @return [true, false] if x is task plan
     #
     def plan?
-      sign_restrictions.call(coplan)
+      sign_restrictions_apply?(coplan)
     end
 
     # number of basis indexes = equations number
