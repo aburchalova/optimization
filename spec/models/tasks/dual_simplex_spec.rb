@@ -57,7 +57,7 @@ describe Tasks::DualSimplex do
   end
 
   describe 'step_multiplier_string' do
-    it { dual_task.step_multiplier_string.to_a.should == [0, 0, 1] }
+    it { dual_task.step_multiplier_string.to_a.flatten.should == [0, 0, 1] }
   end
 
   describe 'steps_weight' do

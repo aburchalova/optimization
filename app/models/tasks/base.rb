@@ -15,7 +15,7 @@ module Tasks
 
     # plan_vect is array, makes matrix
     #
-    def with(plan_vect, basis_indices) #TODO: change!
+    def with(plan_vect, basis_indices)
       self.class.new(task, BasisPlan.new(plan_vect, basis_indices))
     end
 
@@ -52,6 +52,10 @@ module Tasks
 
     def sufficient_for_optimal?
       !singular_basis_matrix?
+    end
+
+    def result_plan
+      raise NotImplementedError
     end
   end
 end

@@ -32,18 +32,16 @@ module Solvers
 
     def result
       iterate
-      status.data = optimal? ? task.plan : nil
+      status.data = (optimal? ? task.result_plan : nil)
       status
     end
 
     def result_plan
-      iterate
-      optimal? && task.plan || nil
+      result.data
     end
 
     def result_ary
-      iterate
-      optimal? && task.plan.x_ary || nil
+      result.data.try(:x_ary)
     end
 
     def to_s

@@ -78,8 +78,8 @@ module Tasks
     # TODO: always return?
     # If basis plan is optimal, returns optimal plan
     # for dual task (i.e. for usual)
-    def dual_optimal_plan
-      sufficient_for_optimal? && pseudoplan
+    def result_plan
+      @result_plan ||= BasisPlan.simple_init(pseudoplan, plan.basis_indexes)
     end
 
     # s = e'[k] * Ab^-1. Vector
@@ -91,11 +91,11 @@ module Tasks
     # s'
     #
     def step_multiplier_string
-      @s_string ||= Matrix.eye_row(:size => task.m, :index => neg_kappa_index) *
-      inverted_basis_matrix
+      @s_string ||= Matrix.eye_row(:size => task.m, :index => neg_kappa_index).to_matrix(1, task.m) *
+        inverted_basis_matrix
     end
 
-    # sigma
+    # sigma. N-vector
     #
     # @return [Array<Float>]
     #
@@ -112,10 +112,14 @@ module Tasks
       steps.any? { |s| s < Float::INFINITY }
     end
 
+    # sigma0 - minimal of sigmas
+    #
     def step
       step_with_index.first
     end
 
+    # j0, sigma[j0] = sigma0 = step
+    #
     def step_index
       step_with_index.last
     end
@@ -130,6 +134,24 @@ module Tasks
     #
     def steps_weight
       @steps_weight ||= calculate_steps_weight
+    end
+
+    # Returns suitable first dual basis plan for given linear task
+    #
+    # @param linear_task [LinearTask] a, b, c
+    # 
+    # @return [GSL::Matrix] m-vector
+    #
+    def self.first_basis_plan_for(a, b, c, basis_indices)
+      # potentials vector of the main task is a basis plan for dual
+      linear_task = LinearTask.new(:a => a, :b => b, :c => c)
+      plan = BasisPlan.new(nil, basis_indices)
+      fake_task = Tasks::Simplex.new(linear_task, plan)
+      fake_task.potential_vector
+    end
+
+    def target_function
+      (task.b.transpose * plan.x).get(0)
     end
 
     protected

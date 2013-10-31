@@ -228,5 +228,9 @@ module Tasks
     def clone
       Tasks::Simplex.new(task.clone, plan.clone)
     end
+
+    def result_plan
+      plan
+    end
   end
 end
