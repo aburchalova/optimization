@@ -50,7 +50,7 @@ class FirstPhaseSimplexAnalyzer
   def try_compose_real_task_with_plan
     if compatible_constraints?
       @basis_plan = find_initial_task_basis_plan
-      task_with_plan = Tasks::Simplex.new result_task, basis_plan
+      @result_task_with_basis = Tasks::Simplex.new result_task, basis_plan
     else
       status.incompatible!
     end
@@ -102,7 +102,7 @@ class FirstPhaseSimplexAnalyzer
   end
 
   def real_indices
-    @real_indices ||= (0...task.n).to_a
+    task.indices
   end
   #########################################################
 
