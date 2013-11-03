@@ -1,8 +1,9 @@
 module Solvers
   class DualSimplex < Solvers::Base
-    def self.simple_init(a, b, c, plan, basis)
-      task, x = super
-      new(Tasks::DualSimplex.new(task, x))
+    def self.simple_init(a, b, c, basis)
+      plan = Tasks::RestrictedDualSimplex.first_basis_plan_for(a, b, c, basis)
+      task = LinearTask.new(:a => a, :b => b, :c => c)
+      new(Tasks::RestrictedDualSimplex.new(task, plan))
     end
 
     def calculate_and_change_status
