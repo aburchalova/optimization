@@ -6,7 +6,7 @@ module NewTaskComposers
 
     # Index of minimal theta. New basis matrix will be different by this column
     def var_to_remove_index
-      task.neg_kappa_index
+      task.unfit_kappa_index
     end
 
     def var_to_add

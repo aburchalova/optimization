@@ -50,7 +50,7 @@ module Tasks
     end
 
     def c_n
-      @c_n ||= task.c.cut_rows(plan.nonbasis_indexes)
+      @c_n ||= task.c.cut_rows(nonbasis_indices)
     end
 
     def target_function
@@ -77,7 +77,7 @@ module Tasks
 
     def calculate_estimates_ary
       result = Array.new(plan.x_ary.length, 0)
-      plan.nonbasis_indexes.each do |index|
+      nonbasis_indices.each do |index|
         matrix_col = task.a.cut([index]).gsl_matrix # O_o because get_col throws some fucking error
         result[index] = (potential_string * matrix_col).get(0) - task.c.get(index)
         # puts "result[#{index}] = (#{potential_string} * #{matrix_col}).get(0) - #{task.c.get(index)} = #{result[index]}"
@@ -87,7 +87,7 @@ module Tasks
     end
 
     def estimates_n
-      estimates_ary.values_at(*plan.nonbasis_indexes)
+      estimates_ary.values_at(*nonbasis_indices)
     end
 
     def negative_estimate_index

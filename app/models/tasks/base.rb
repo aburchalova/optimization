@@ -14,9 +14,7 @@ module Tasks
     #
     def initialize(task, plan, sign_restrictions = {})
       @task, @plan = task, plan
-      sign_restrictions[:lower] ||= Array.new(task.n, 0)
-      sign_restrictions[:upper] ||= Array.new(task.n, Float::INFINITY)
-      @sign_restrictions = sign_restrictions
+      @sign_restrictions = compose_restrictions(sign_restrictions)
     end
 
     def low_restr
@@ -27,20 +25,31 @@ module Tasks
       sign_restrictions[:upper]
     end
 
-    def lower_sign_restriction_apply?(x = plan.x)
+    # Checks lower sign restrictions for all x items (if index not supplied)
+    # or just #ind restriction for given item
+    #
+    def lower_sign_restriction_apply?(x = plan.x, ind = nil)
+      return x >= low_restr[ind] if ind
       x.to_a.flatten.zip(low_restr).all? do |x_item, restr_item|
         x_item >= restr_item
       end
     end
 
-    def upper_sign_restriction_apply?(x = plan.x)
+    # Checks upper sign restrictions for all x items (if index not supplied)
+    # or just #ind restriction for given item
+    #
+    def upper_sign_restriction_apply?(x = plan.x, ind = nil)
+      return x <= low_restr[ind] if ind
       x.to_a.flatten.zip(up_restr).all? do |x_item, restr_item|
         x_item <= restr_item
       end
     end   
 
-    def sign_restrictions_apply?(x = plan.x)
-      lower_sign_restriction_apply?(x) && upper_sign_restriction_apply?(x)
+    # Checks sign restrictions for all x items (if index not supplied)
+    # or just #ind restriction for given item
+    #
+    def sign_restrictions_apply?(x = plan.x, ind = nil)
+      lower_sign_restriction_apply?(x, ind) && upper_sign_restriction_apply?(x, ind)
     end
 
     # plan_vect is array, makes matrix
@@ -50,7 +59,7 @@ module Tasks
     end
 
     def with_restrictions(restr)
-      restr[:lower] ||= low_restr
+      restr[:lower] ||= low_restr #TODO: change
       restr[:upper] ||= up_restr
       self.class.new(task, plan, restr)
     end
@@ -92,6 +101,31 @@ module Tasks
 
     def result_plan
       raise NotImplementedError
+    end
+
+    def indices
+      @j ||= (0...task.n).to_a
+    end
+
+    def nonbasis_indices
+      @jn ||= indices - plan.basis_indexes
+    end
+
+    protected
+
+    def compose_restrictions(sign_restrictions)
+      sign_restrictions[:lower] = compose_restriction(sign_restrictions[:lower])
+      sign_restrictions[:upper] = compose_restriction(sign_restrictions[:upper], Float::INFINITY)
+      sign_restrictions
+    end
+
+    # If data is float, composes array with such item
+    #
+    # @param data [Array, Float]
+    #
+    def compose_restriction(data, default_value = 0)
+      data = Array.new(task.n, data || default_value) unless data.is_a?(Enumerable)
+      data
     end
   end
 end

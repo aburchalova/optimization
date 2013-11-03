@@ -47,12 +47,12 @@ describe Tasks::DualSimplex do
     end
   end
 
-  describe 'neg_kappa_index' do
+  describe 'unfit_kappa_index' do
     let(:kappa_b) { Matrix.new([-1, -1, -1]).transpose }
     before { dual_task.stub(:pseudoplan_b => kappa_b) }
 
     it 'takes kappa which has minimal variable number' do
-      dual_task.neg_kappa_index.should == 2
+      dual_task.unfit_kappa_index.should == 2
     end
   end
 

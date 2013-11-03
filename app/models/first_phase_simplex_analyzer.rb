@@ -102,7 +102,7 @@ class FirstPhaseSimplexAnalyzer
   end
 
   def real_indices
-    task.indices
+    (0...task.n).to_a
   end
   #########################################################
 
