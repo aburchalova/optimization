@@ -105,5 +105,15 @@ describe Tasks::RestrictedDualSimplex do
     describe 'steps_weight' do
       it { dual_task.steps_weight.to_a.flatten.values_at(1, 3, 4, 5).should == [-1, 1, 3, -1] }
     end
+
+    context 'when negative estimates' do
+      before do
+        dual_task.stub(:coplan => Matrix.new_vector([-10] * 7))
+      end
+
+      it 'raises error' do
+        expect { dual_task.pseudoplan }.to raise_error(ArgumentError)
+      end
+    end
   end
 end

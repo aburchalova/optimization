@@ -17,7 +17,10 @@ module Tasks
     # @return [true, false] if x is task plan
     #
     def plan?
-      sign_restrictions_apply?(coplan)
+      # sign_restrictions_apply?(coplan)
+      # in this task coplan can be negative too, 
+      # so we don't check plan for being positive.
+      true
     end
 
     # number of basis indexes = equations number
@@ -51,9 +54,9 @@ module Tasks
     #
     #
     def nonbasis_neg_est_idx
-      @jn_minus ||= coplan.to_a.flatten.select.with_index do |d, idx|
-        d < 0
-      end.map(&:last)
+      @jn_minus ||= indices.select do |idx|
+        coplan.get(idx) < 0
+      end
     end
 
     # Nonbasis indices to which estimates are non negative
@@ -262,6 +265,12 @@ module Tasks
       result = Array.new(task.n)
       nonbasis_neg_est_idx.each { |i| result[i] = up_restr[i] }
       nonbasis_nonneg_est_idx.each { |i| result[i] = low_restr[i] }
+      # fails because when estimate is negative, nonbasis kappa becomes equal upper bound.
+      # Then if nonbasis kappa is infinite, basis kappa cannot be calculated.
+      #
+      if result.include?(Float::INFINITY)
+        raise ArgumentError, 'Upper restriction is infinite and estimate is negative. Cannot continue.'
+      end
       result
     end
 

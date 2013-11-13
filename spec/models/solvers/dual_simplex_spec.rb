@@ -69,26 +69,26 @@ describe Solvers::DualSimplex do
   context 'with RestrictedDualSimplex task' do
 
     context 'checking new task composing' do
-    let(:a) do
-      Matrix.new(
-        [0, 1, 1, 2, 4, -1, 0],
-        [0, 1, 0, -2, 0, -1, 1],
-        [1, -1, 0, 1, 3, -1, 0]
-      )
-    end
-    let(:b) { Matrix.new([-1, 2, -1]).transpose }
-    let(:c) { Matrix.new_vector([1, -1, 1, 0, 2, -4, 1]) }
-    let(:dual_plan_vect) { Matrix.new([1, 1, 1]).transpose }
-    let(:basis) { [2, 6, 0] }
+      let(:a) do
+        Matrix.new(
+          [0, 1, 1, 2, 4, -1, 0],
+          [0, 1, 0, -2, 0, -1, 1],
+          [1, -1, 0, 1, 3, -1, 0]
+        )
+      end
+      let(:b) { Matrix.new([-1, 2, -1]).transpose }
+      let(:c) { Matrix.new_vector([1, -1, 1, 0, 2, -4, 1]) }
+      let(:dual_plan_vect) { Matrix.new([1, 1, 1]).transpose }
+      let(:basis) { [2, 6, 0] }
 
-    let(:fake_dual_plan) { Tasks::RestrictedDualSimplex.first_basis_plan_for(a, b, c, basis) }
+      let(:fake_dual_plan) { Tasks::RestrictedDualSimplex.first_basis_plan_for(a, b, c, basis) }
 
-    let(:t) { LinearTask.new(:a => a, :b => b, :c => c) }
-    let(:task_given_plan) { Tasks::RestrictedDualSimplex.new(t, BasisPlan.new(dual_plan_vect, basis)) }
-    let(:task_calc_plan) { Tasks::RestrictedDualSimplex.new(t, fake_dual_plan) }
+      let(:t) { LinearTask.new(:a => a, :b => b, :c => c) }
+      let(:task_given_plan) { Tasks::RestrictedDualSimplex.new(t, BasisPlan.new(dual_plan_vect, basis)) }
+      let(:task_calc_plan) { Tasks::RestrictedDualSimplex.new(t, fake_dual_plan) }
 
-    let(:solver_given_plan) { Solvers::DualSimplex.new(task_given_plan) }
-    let(:solver_calc_plan) { Solvers::DualSimplex.new(task_calc_plan) }
+      let(:solver_given_plan) { Solvers::DualSimplex.new(task_given_plan) }
+      let(:solver_calc_plan) { Solvers::DualSimplex.new(task_calc_plan) }
       it 'new plan calculated with delta is equal to new potential vector' do
         solver_given_plan.step
         solver_calc_plan.step
@@ -115,7 +115,60 @@ describe Solvers::DualSimplex do
     end
 
     context 'black box testing' do
+      # context "test1" do
+      #   let(:a) { Matrix.new([1, 3, 1, 0, 0, 0], [2, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 0], [3, 0, 0, 0, 0, 1]) }
+      #   let(:b) { Matrix.new([18, 16, 5, 21]).transpose }
+      #   let(:c) { Matrix.new_vector([2, 3, 0, 0, 0, 0]) }
+      #   let(:plan_vector) { Matrix.new([0, 0, 18, 16, 5, 21]).transpose }
+      #   let(:basis) { [2, 3, 4, 5] }
+      #   let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis) }
 
+      #   it { solver.result_ary.should == [6, 4, 0, 0, 1, 3] }
+      # end
+
+      # context "test not a plan" do
+      #   let(:a) { Matrix.new([1, 0, 7.0/5, 0], [0, 1, -13.0/5, 2]) }
+      #   let(:b) { Matrix.new([-1, 0]).transpose }
+      #   let(:c) { Matrix.new_vector([-4, -2, 1, -1]) }
+      #   let(:plan_vector) { Matrix.new([-1, 0, 0, 0]).transpose }
+      #   let(:basis) { [0, 1] }
+      #   let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis) }
+
+      #   it { solver.result.should be_not_a_plan }
+      # end
+
+      context "test3", :focus do
+        let(:a) { Matrix.new([1, 3, -1, 0, 2, 0], [0, -2, 4, 1, 0, 0], [0, -4, 3, 0, 8, 1]) }
+        let(:b) { Matrix.new([7, 12, 10]).transpose }
+        let(:c) { Matrix.new_vector([0, -1, 3, 0, -2, 0]) }
+        let(:plan_vector) { Matrix.new([7, 0, 0, 12, 0, 10]).transpose }
+        let(:basis) { [0, 3, 5] }
+        let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis, :upper => 1000) }
+
+        it { solver.result_ary.should == [0, 4, 5, 0, 0, 11] }
+      end
+
+      # context "class task1" do
+      #   let(:a) { Matrix.new([1, 0, 0, 1, -3, 4, 0, 1, 4], [2, 1, 2, 1, -5, 2, 0, -5, 2], [1, 1, 1, 1, 1, 1, 1, 1, 1]) }
+      #   let(:b) { Matrix.new([1, 8, 6]).transpose }
+      #   let(:c) { Matrix.new_vector([-2, 2, 1, 3, 5, 10, 15, 4, 6]) }
+      #   let(:plan_vector) { Matrix.new([0, 3, 2, 1, 0, 0, 0, 0, 0]).transpose }
+      #   let(:basis) { [1, 2, 3] }
+      #   let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis) }
+
+      #   it { solver.result_ary.should == [0, 0, 3.75, 0, 0, 0.25, 2, 0, 0] }
+      # end
+
+      # context "class task2" do
+      #   let(:a) { Matrix.new([2, 0, 1, -1, 0, 1, 1, -2, 0], [-1, 3, 1, -1, 1, 2, 0, 4, 0], [0, 4, 2, 0, 0, 1, 0, 5, 1]) }
+      #   let(:b) { Matrix.new([4, 3, 5]).transpose }
+      #   let(:c) { Matrix.new_vector([4, 2, 1, -2, 0, 3, 2, -1, 0]) }
+      #   let(:plan_vector) { Matrix.new([0, 0, 0, 0, 3, 0, 4, 0, 5]).transpose }
+      #   let(:basis) { [4, 6, 8] }
+      #   let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis) }
+
+      #   it { solver.result_ary.should == [2, 0, 0, 5, 0, 5, 0, 0, 0] }
+      # end
     end
 
   end
