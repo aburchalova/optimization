@@ -2,11 +2,11 @@ class Float
   COMPARISON_PRECISION = 1.0/10**8
 
   def lt?(other)
-    self - other < COMPARISON_PRECISION
+    self - other < -COMPARISON_PRECISION
   end
 
   def gt?(other)
-    self - other > -COMPARISON_PRECISION
+    self - other > COMPARISON_PRECISION
   end
 
   def eq?(other)
@@ -14,9 +14,10 @@ class Float
   end
 
   def <=>(other)
-    return 0 if eq?(other)
+    return if to_f.nan? || other.to_f.nan?
     return -1 if lt?(other)
     return 1 if gt?(other)
+    return 0
   end
 
   def ==(other)
