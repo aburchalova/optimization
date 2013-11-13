@@ -137,13 +137,13 @@ describe Solvers::DualSimplex do
       #   it { solver.result.should be_not_a_plan }
       # end
 
-      context "test3", :focus do
+      context "test3" do
         let(:a) { Matrix.new([1, 3, -1, 0, 2, 0], [0, -2, 4, 1, 0, 0], [0, -4, 3, 0, 8, 1]) }
         let(:b) { Matrix.new([7, 12, 10]).transpose }
         let(:c) { Matrix.new_vector([0, -1, 3, 0, -2, 0]) }
         let(:plan_vector) { Matrix.new([7, 0, 0, 12, 0, 10]).transpose }
         let(:basis) { [0, 3, 5] }
-        let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis, :upper => 1000) }
+        let(:solver) { Solvers::DualSimplex.simple_init(a, b, c, basis, :upper => 20) }
 
         it { solver.result_ary.should == [0, 4, 5, 0, 0, 11] }
       end

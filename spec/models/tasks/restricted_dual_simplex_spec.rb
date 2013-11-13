@@ -35,8 +35,14 @@ describe Tasks::RestrictedDualSimplex do
     end
   end
 
+  describe 'unfit_kappa_basis_var' do
+    it 'takes kappa var num which is minimal' do
+      dual_task.unfit_kappa_basis_var.should == 0
+    end
+  end
+
   describe 'unfit_kappa_index' do
-    it 'takes kappa which has minimal variable number' do
+    it 'takes position in basis of  kappa which has minimal variable number' do
       dual_task.unfit_kappa_index.should == 2
     end
   end

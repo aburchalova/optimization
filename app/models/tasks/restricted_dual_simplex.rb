@@ -214,8 +214,8 @@ module Tasks
     # and their indices
     #
     def unfit_kappas_with_indices
-      @unfit_kappas_with_indices ||= kappa_b_ary.each_with_index.find_all do |a, ind|
-        !sign_restrictions_apply?(a, ind)
+      @unfit_kappas_with_indices ||= kappa_b_ary.zip_indices.find_all do |a, ind|
+        !sign_restrictions_apply?(a, basis_indexes[ind]) #ind now is index of basis var in basis; should be var number 
       end
     end
 
