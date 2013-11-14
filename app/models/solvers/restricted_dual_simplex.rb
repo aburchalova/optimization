@@ -1,6 +1,8 @@
 module Solvers
 
-  class DualSimplex < Solvers::Base #TODO: change to work with DualSimplex task
+  class RestrictedDualSimplex < Solvers::Base #TODO: refactor
+    attr_accessor :used_basises
+
     def self.simple_init(a, b, c, basis, restr = {})
       plan = Tasks::RestrictedDualSimplex.first_basis_plan_for(a, b, c, basis)
       task = LinearTask.new(:a => a, :b => b, :c => c)
@@ -19,9 +21,9 @@ module Solvers
       @initial_task = task_with_plan
       @task = task_with_plan
       @status = Statuses::Simplex[:initialized]
-      @new_task_composer_class = NewTaskComposers::DualSimplex
+      @new_task_composer_class = NewTaskComposers::RestrictedDualSimplex
       @logging = false
-      # @used_basises = []
+      @used_basises = []
       self
     end
 
@@ -36,7 +38,7 @@ module Solvers
     def handle_step_end
       warn_if_zero_step
       # raise LoopError if used_basises.include? task.basis_indexes
-      # used_basises << task.basis_indexes
+      used_basises << task.basis_indexes
       @status.step_completed!
     end
 
