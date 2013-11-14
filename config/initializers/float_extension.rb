@@ -1,4 +1,4 @@
-class Float
+class Float < Numeric
   COMPARISON_PRECISION = 1.0/10**8
 
   def lt?(other)
@@ -13,6 +13,14 @@ class Float
     (self - other).abs <= COMPARISON_PRECISION
   end
 
+  def gte?(other)
+    gt?(other) || eq?(other)
+  end
+
+  def lte?(other)
+    lt?(other) || eq?(other)
+  end
+
   def <=>(other)
     return if to_f.nan? || other.to_f.nan?
     return -1 if lt?(other)
@@ -25,27 +33,26 @@ class Float
   end
 
   def neg?
-    self < 0
+    lt? 0
   end
 
   def pos?
-    self > 0
+    gt? 0
   end
 
   def nonneg?
-    self >= 0
+    gte? 0
   end
 
   def nonpos?
-    self <= 0
+    lte? 0
   end
 
   def zero?
-    self == 0
+    eq? 0
   end
 
   def nonzero?
-    self != 0
+    !zero?
   end
-
 end

@@ -18,12 +18,12 @@ module Tasks
       plan? &&
         plan.basis_indexes.length == task.m &&
         basis_det != 0 &&
-        coplan_b.isnull?
+        coplan_b.to_a.flatten.all?(&:zero?)
     end
 
     def nonsingular_plan?
       basis_plan? &&
-        coplan_n.ispos?
+        coplan_n.to_a.flatten.all?(&:pos?)
     end
 
     # Coplan, or delta, is a vector that can be built by each plan.

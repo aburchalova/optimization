@@ -19,7 +19,7 @@ module Matrices::Optimization
   # @see #alpha
   # 
   def singular?(inverse, k)
-    alpha(inverse, k) == 0
+    alpha(inverse, k).zero?
   end
 
   # @see #alpha

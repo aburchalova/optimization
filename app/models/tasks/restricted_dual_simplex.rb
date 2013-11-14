@@ -31,7 +31,7 @@ module Tasks
       plan? &&
         plan.basis_indexes.length == task.m &&
         basis_det != 0 &&
-        coplan_b.isnull?
+        coplan_b.to_a.flatten.all?(&:zero?)
     end
 
     def nonsingular_plan?
@@ -201,7 +201,7 @@ module Tasks
       (task.b.transpose * plan.x).get(0)
     end
 
-    protected
+    # protected
 
     def calculate_unfit_kappa_index
       return unless unfit_kappas_with_indices

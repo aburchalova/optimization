@@ -46,11 +46,11 @@ class BasisPlan < Struct.new(:x, :basis_indexes)
   end
 
   def zero_x_n?
-    x_n.all? &:zero?
+    x_n.all?(&:zero?)
   end
 
   def positive_x_b?
-    x_b.all? { |item| item > 0 }#&0.method(:<) # positive
+    x_b.all?(&:pos?)
   end
 
   def clone

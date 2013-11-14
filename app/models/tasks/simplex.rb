@@ -23,7 +23,7 @@ module Tasks
     def basis_plan?
       plan? &&
         plan.basis_indexes.length == task.m &&
-        basis_det != 0 &&
+        basis_det.nonzero? &&
         plan.x_n.all?(&:zero?)
     end
 
@@ -42,7 +42,7 @@ module Tasks
     end
 
     def sufficient_for_optimal?
-      super && estimates_ary.all? { |i| i >= 0 }
+      super && estimates_ary.all?(&:nonneg?)
     end
 
     def c_b
@@ -91,7 +91,7 @@ module Tasks
     end
 
     def negative_estimate_index
-      estimates_ary.index { |i| i < 0 }
+      estimates_ary.index(&:neg?)
       # Blend rule: taking minimal ji. ji is a part of non-basis indices so that estimates[ji] < 0
       # est_and_basis = estimates.zip(basis) # last - unique. first - not unique
       # negative_estimates = est_and_basis.select { |e_and_b| e_and_b.first < 0 }
@@ -128,7 +128,7 @@ module Tasks
     # returns nil if no positive item
     #
     def positive_z_index
-      z_ary.index { |i| i > 0 }
+      z_ary.index(&:pos?)
     end
 
     def negative_z?
@@ -145,7 +145,7 @@ module Tasks
       # puts "Jb = {#{plan.basis_indexes.join(',')}}"
       z_ary.each_with_index do |item, idx|
         # puts "theta[#{idx}] = x[j#{idx}] / z[#{idx}] = x[#{plan.basis_indexes[idx]}] / #{item} = #{plan.get(plan.basis_indexes[idx])} / #{item}"
-        result[idx] = plan.get(plan.basis_indexes[idx]) / item if item > 0
+        result[idx] = plan.get(plan.basis_indexes[idx]) / item if item.pos?
       end
       # puts "theta result = #{result}"
       result
