@@ -8,11 +8,11 @@ class Numeric
   end
 
   def nonneg?
-    self <= 0
+    self >= 0
   end
 
   def nonpos?
-    self >= 0
+    self <= 0
   end
 
   def zero?

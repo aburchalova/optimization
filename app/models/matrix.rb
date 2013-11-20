@@ -106,6 +106,12 @@ class Matrix
     Matrix.new(*rows_ary)
   end
 
+  def remove_col(i)
+    cols = (0...colcount).to_a - [i]
+    cut(cols)
+  end
+  alias :remove_column :remove_col
+
   def colcount
     gsl_matrix.size2
   end
