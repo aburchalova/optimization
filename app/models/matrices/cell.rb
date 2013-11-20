@@ -16,4 +16,5 @@ class Matrices::Cell < DelegateClass(Array)
   def share_item?(cell)
     row == cell.row || column == cell.column
   end
+  
 end
