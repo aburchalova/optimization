@@ -14,4 +14,11 @@ class Array
   def find_all_indices
     each_with_index.find_all { |i, _| yield(i) }.map &:last
   end
+
+  # Deletes items from array and returns new array,
+  # doesn't modify current one.
+  #
+  def safe_delete_at(*indices)
+    clone.tap { |ary| ary.delete_at(*indices) }
+  end
 end

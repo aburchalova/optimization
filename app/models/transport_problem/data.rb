@@ -1,15 +1,25 @@
 class TransportProblem::Data
   attr_accessor :a, :b, :c
+  # attr_accessor :disabled_rows, :disabled_columns
 
   # a [Array] suppliers (size m)
   # b [Array] consumers (size n)
   # c [Matrix, GSL::Matrix] cost      (size m * n)
   #
-  def initialize(a, b, c)
+  def initialize(a = nil, b = nil, c = nil)
     @a = a
     @b = b
     @c = c
   end
+
+  # The same data after removing rows/columns
+  # E.g., when finding first plan, some rows/columns are 'crossed-out':
+  # they are taken out of the minimal item / north-west item search,
+  # but the indices of the matrix should stay the same as before.
+  #
+  # def available_data
+  #   @available_data ||= clone
+  # end
 
   def m
     a.length
@@ -36,15 +46,41 @@ class TransportProblem::Data
     [a, b]
   end
 
-  def remove_row!(i)
-    a.delete_at(i)
-    with!(:c => c.remove_row(i))
+  def a_b_for(cell)
+    [a[cell.row], b[cell.column]]
   end
 
+  def empty?
+    m == 0 || n == 0
+  end
+
+  # Removes from self
+  #
+  def remove_row!(i)
+    a.delete_at(i)
+    new_c = c.remove_row(i)
+    with!(:c => new_c) #if @available_data
+  end
+
+  # Removes from self
+  #
   def remove_column!(i)
     b.delete_at(i)
-    with!(:c => c.remove_column(i))
+    new_c = c.remove_column(i)
+    with!(:c => new_c)
   end
+
+  # # Removes from available data
+  # #
+  # def disable_row(i)
+  #   available_data.remove_row!(i)
+  # end
+
+  # # Removes from available data
+  # #
+  # def disable_column(i)
+  #   available_data.remove_column!(i)
+  # end
 
   # New data with given changes
   #

@@ -5,8 +5,16 @@ class Matrices::Cell < DelegateClass(Array)
     self[0]
   end
 
+  def row=(i)
+    self[0] = i
+  end
+
   def column
     self[1]
+  end
+
+  def column=(i)
+    self[1] = i
   end
 
   # If cells share row or column

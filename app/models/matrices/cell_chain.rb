@@ -11,7 +11,7 @@ class Matrices::CellChain < DelegateClass(Array)
   #
   # Matrices.CellChain.from([1, 2], [2, 3])
   #
-  def initialize(ary)
+  def initialize(ary = [])
     # TODO: perform check if it's a chain?
 
     # create cells from arrays
