@@ -90,8 +90,8 @@ class Matrix
     ::Matrix.from_gsl(result)
   end
 
-  def self.random(n)
-    items = (1..n).to_a
+  def self.random(n, m = n)
+    items = (1..m).to_a
     rows = []
     n.times { rows << items.shuffle }
     Matrix.new(*rows)
@@ -137,5 +137,13 @@ class Matrix
   # @param matrix [GSL::Matrix]
   def self.neg(matrix, row_idx, col_idx)
     matrix.set([row_idx, col_idx], -matrix.get(row_idx, col_idx))
+  end
+
+  def sum
+    to_a.flatten.sum
+  end
+
+  def self.pp
+    to_a.inject("") { |mem, var|  }
   end
 end

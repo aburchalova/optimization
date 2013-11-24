@@ -21,4 +21,9 @@ class Array
   def safe_delete_at(*indices)
     clone.tap { |ary| ary.delete_at(*indices) }
   end
+
+  def to_c
+    raise ArgumentError, 'Array should have two items to be a cell' unless length == 2
+    Matrices::Cell.new(self)
+  end
 end

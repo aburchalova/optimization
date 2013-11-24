@@ -4,7 +4,7 @@ class TransportProblem::FirstPlan
   def initialize(data)
     @initial_data = data
     @data = @initial_data.clone
-    @result = TransportProblem::BasisPlan.new
+    @result = TransportProblem::BasisPlan.blank(data.rowcount, data.colcount)
   end
 
   def desired_basis_size
@@ -12,20 +12,20 @@ class TransportProblem::FirstPlan
   end
 
   def basis_size
-    result.size
+    result.basis.length
   end
 
   # @param data [TransportProblem::Data]
   # @param options [Hash] :method => :min | :corner
   #
-  def self.for(data, options)
+  def self.for(data, options = {})
     method = options[:method] || :corner
 
     case method
     when :min
-      TransportProblem::MinItemMethod.new(data).find
+      TransportProblem::MinItemFirstPlan.new(data).find
     when :corner
-      raise NotImplementedError
+      TransportProblem::CornerFirstPlan.new(data).find
     else
       raise ArgumentError, "Unknown first plan method #{method}"
     end

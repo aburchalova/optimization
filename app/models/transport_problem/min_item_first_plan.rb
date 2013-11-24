@@ -13,6 +13,7 @@ class TransportProblem::MinItemFirstPlan < TransportProblem::FirstPlan
     cell = data.min_c_cell
     a, b = data.a_b_for_min_c # PROBLEM: as matrix rows/cols are removed, indices are not valid
     a < b ? add_a_to_plan(cell) : add_b_to_plan(cell)
+    result.basis << cell
   end
 
   # if adding a to plan, a row should be removed from
@@ -20,17 +21,17 @@ class TransportProblem::MinItemFirstPlan < TransportProblem::FirstPlan
   #
   # Modifies plan and data
   #
-  def self.add_a_to_plan(cell)
+  def add_a_to_plan(cell)
     a = data.a[cell.row]
     result[cell] = a
-    data.delete_row!(cell.row)
+    data.remove_row!(cell.row)
     data.b[cell.column] -= a
   end
 
-  def self.add_b_to_plan(cell)
+  def add_b_to_plan(cell)
     b = data.b[cell.column]
     result[cell] = b
-    data.delete_column!(cell.column)
+    data.remove_column!(cell.column)
     data.a[cell.row] -= b
   end
 
@@ -39,19 +40,26 @@ class TransportProblem::MinItemFirstPlan < TransportProblem::FirstPlan
   end
 
   def complete_basis
-    uk = result
-    1.upto(items_to_add_number) do |k| #TODO: don't need k?
-      uk = cell_to_add_without_cycle(uk)
+    1.upto(items_to_add_number) do
+      result.basis << cell_to_add_without_cycle(result.basis)
     end
+  end
+
+  def nonbasis_cells(current_basis)
+    data.flat_all_cells - current_basis
   end
 
   # Adds one cell so that result doesn't contain cycles
   #
   # @param basis [TransportProblem::Basis] set of cells without cycle
   #
-  # @return [TransportProblem::Basis] new basis
+  # @return [Matrices::Cell] doesn't add cycle
   #
-  def add_cell_without_cycle(basis) #TODO:not here? return or modify?
-
+  def cell_to_add_without_cycle(current_basis)
+    loop do
+      cell_candidate = nonbasis_cells.sample
+        basis_candidate = current_basis + [cell_candidate]
+      return cell_candidate unless basis_candidate.has_cycle?
+    end
   end
 end

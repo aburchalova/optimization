@@ -9,7 +9,7 @@ class TransportProblem::Data
   def initialize(a = nil, b = nil, c = nil)
     @a = a
     @b = b
-    @c = c
+    @c = c.respond_to?(:remove_row) ? c : Matrix.from_gsl(c) if c
   end
 
   # The same data after removing rows/columns
@@ -24,10 +24,12 @@ class TransportProblem::Data
   def m
     a.length
   end
+  alias :rowcount :m
 
   def n
     b.length
   end
+  alias :colcount :n
 
   # Cell that has minimal c in it
   #
@@ -41,9 +43,9 @@ class TransportProblem::Data
   # @return [Array] [a, b]
   #
   def a_b_for_min_c
-    a = a[min_c_cell.row]
-    b = b[min_c_cell.column]
-    [a, b]
+    a_val = a[min_c_cell.row]
+    b_val = b[min_c_cell.column]
+    [a_val, b_val]
   end
 
   def a_b_for(cell)
@@ -58,7 +60,7 @@ class TransportProblem::Data
   #
   def remove_row!(i)
     a.delete_at(i)
-    new_c = c.remove_row(i)
+    new_c = c.remove_row(i) unless a.empty?
     with!(:c => new_c) #if @available_data
   end
 
@@ -66,21 +68,9 @@ class TransportProblem::Data
   #
   def remove_column!(i)
     b.delete_at(i)
-    new_c = c.remove_column(i)
+    new_c = c.remove_column(i) unless b.empty?
     with!(:c => new_c)
   end
-
-  # # Removes from available data
-  # #
-  # def disable_row(i)
-  #   available_data.remove_row!(i)
-  # end
-
-  # # Removes from available data
-  # #
-  # def disable_column(i)
-  #   available_data.remove_column!(i)
-  # end
 
   # New data with given changes
   #
@@ -120,5 +110,24 @@ class TransportProblem::Data
 
   def clone
     with({})
+  end
+
+  def valid_constraints?
+    a.sum == b.sum && compatible?
+  end
+
+  # @return [Array<Array<Cell>>]
+  def all_cells
+    rowcount.times.map do |i|
+      colcount.times.map { |j| Matrices::Cell.new([i, j]) }
+    end
+  end
+
+  def flat_all_cells
+    all_cells.inject(:+)
+  end
+
+  def to_s
+    "a: #{a.to_a.to_s}\nb:#{b.to_s}\nc:#{c.to_s}"
   end
 end

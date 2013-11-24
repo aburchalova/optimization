@@ -38,4 +38,20 @@ describe Matrices::Cell do
       it { subject.should_not be_share_item(another)}
     end
   end
+
+  describe '#right!' do
+    it 'increases column' do
+      subject.right!
+      subject.column.should == 3
+    end
+  end
+
+  describe '#right' do
+    it 'returns new cell with increased column' do
+      new_cell = subject.right
+      new_cell.column.should == 3
+      subject.column.should == 2
+    end
+
+  end
 end

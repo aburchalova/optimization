@@ -15,7 +15,7 @@
 # => {[1, 2]=>3, [5, 7]=>4}
 #
 class TransportProblem::Basis < DelegateClass(Hash)
-
+# TODO: change it to matrix?
   def initialize(h = {})
     super
   end
