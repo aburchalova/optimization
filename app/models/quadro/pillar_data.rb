@@ -2,7 +2,7 @@ module Quadro
   class PillarData
     attr_accessor :data, :pillar_plan
 
-    delegate :a, :b, :c, :d, :to => :data
+    delegate :a, :b, :c, :d, :indices, :rowcount, :colcount, :to => :data
     delegate :pillar_indices, :plan, :to => :pillar_plan
 
     def initialize(data, pillar_plan)
@@ -31,6 +31,8 @@ module Quadro
       @inverse_pillar_matrix ||= pillar_matrix.invert
     end
     alias :inverse_pillar_a :inverse_pillar_matrix
+
+
 
   end
 end

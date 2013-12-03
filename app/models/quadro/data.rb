@@ -19,5 +19,17 @@ module Quadro
     end
     alias :c_line :dependent_c
 
+    def indices
+      @j ||= (0...a.size2).to_a
+    end
+
+    def rowcount
+      a.size1
+    end
+
+    def colcount
+      a.size2
+    end
+
   end
 end

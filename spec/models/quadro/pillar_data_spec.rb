@@ -25,4 +25,8 @@ describe Quadro::PillarData do
   describe '#pillar_dependent_c' do
     it { data.pillar_dependent_c.should == Matrix.new_vector([2, 3]) }
   end
+
+  describe '#indices' do
+    it { data.indices.should == [0, 1, 2] }
+  end
 end
