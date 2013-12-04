@@ -38,6 +38,7 @@ module Quadro
     end
     alias :step :find
 
+    # j*
     def find_index
       all_steps.index(step)
     end

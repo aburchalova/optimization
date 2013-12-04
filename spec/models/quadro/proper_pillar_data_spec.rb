@@ -39,4 +39,14 @@ describe Quadro::ProperPillarData do
     end
 
   end
+
+  describe '#change_pillar' do
+    subject(:new_data) { proper_data.change_pillar(1, 1) }
+    it { new_data.pillar_indices.should == [2, 1] }
+
+    it 'leaves data and plan' do
+      new_data.plan.should == proper_data.plan
+      new_data.data.should == proper_data.data
+    end
+  end
 end

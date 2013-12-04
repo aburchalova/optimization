@@ -25,6 +25,12 @@ module Quadro
       @proper_d ||= d.cut(proper_indices).cut_rows(proper_indices)
     end
 
+    # @return [PillarData] new data
+    #
+    def change_pillar(what_index, by)
+      ProperPillarData.new(data, change_pillar_plan(what_index, by), proper_indices)
+    end
+
     def construct_kkt
       kkt = Matrix.zeros(block_matrix_size)
       fill_proper_a(kkt)

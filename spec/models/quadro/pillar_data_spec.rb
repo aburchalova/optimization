@@ -29,4 +29,9 @@ describe Quadro::PillarData do
   describe '#indices' do
     it { data.indices.should == [0, 1, 2] }
   end
+
+  describe '#change_pillar' do
+    subject { data.change_pillar(1, 1).pillar_indices }
+    it { should == [2, 1] }
+  end
 end

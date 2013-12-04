@@ -32,7 +32,25 @@ module Quadro
     end
     alias :inverse_pillar_a :inverse_pillar_matrix
 
+    # Change +what+ index from pillar indices by
+    # +by+ index not from them
+    #
+    # @param what_index [Fixnum] index of index to remove
+    # @param by [Fixnum] index to add
+    #
+    # @return [PillarPlan] new pillar plan
+    #
+    def change_pillar_plan(what_index, by)
+      new_indices = pillar_indices.dup
+      new_indices[what_index] = by
+      PillarPlan.new(plan, new_indices)
+    end
 
+    # @return [PillarData] new data
+    #
+    def change_pillar(what_index, by)
+      PillarData.new(data, change_pillar_plan(what_index, by))
+    end
 
   end
 end
