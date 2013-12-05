@@ -31,5 +31,10 @@ module Quadro
       a.size2
     end
 
+    def clone
+      self.class.new(:a => a.clone, :b => b.clone, 
+        :c => c.clone, :d => d.clone)
+    end
+
   end
 end

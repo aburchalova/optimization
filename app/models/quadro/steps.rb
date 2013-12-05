@@ -42,11 +42,16 @@ module Quadro
     def find_index
       all_steps.index(step)
     end
+    alias :step_index :find_index
+
+    def has_step?
+      step < Float::INFINITY
+    end
 
     # l' * D * l
     #
     def direction_value
-      @ldl ||= (direction.transpose * proper_data.d * direction).get(0)
+      @ldl ||= (direction.transpose * proper_data.d.gsl_matrix * direction).get(0)
     end
 
     def direction

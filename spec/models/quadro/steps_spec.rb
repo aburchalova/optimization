@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Quadro::Steps do
   let(:data) { double(:ProperData,
     :plan => Matrix.new([2, 0, 1]).transpose,
-    :d => Matrix.eye(3)
+    :d => Matrix.from_gsl(Matrix.eye(3))
     ) }
   let(:estimate) { -4 }
   let(:estimate_idx) { 1 }

@@ -14,10 +14,18 @@ module Quadro
       @negative_estimate_idx ||= estimates.index(&:neg?)
     end
 
+    def pivot_estimate
+      @pivot_estimate ||= (estimates[negative_estimate_idx] if negative_estimate_idx)
+    end
+
     def estimates
       @estimates ||= pillar_data.dependent_c_ary.map.with_index do |cj, j| # calculating for all indices, but for pillar they will be 0
         cj + (potentials_string * pillar_data.a.cut([j]).gsl_matrix).get(0)
       end
+    end
+
+    def estimates=(new_est)
+      @estimates = new_est
     end
 
     def potentials_string

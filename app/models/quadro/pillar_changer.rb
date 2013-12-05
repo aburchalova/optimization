@@ -6,9 +6,15 @@ module Quadro
   class PillarChanger
     attr_accessor :proper_data, :index_to_remove_index
 
+    # index_to_remove_index is position if step index in pillar
+    #
     def initialize(proper_data, index_to_remove_index)
       @proper_data = proper_data
       @index_to_remove_index = index_to_remove_index
+    end
+
+    def self.needs_change?(proper_data, index_to_remove)
+      proper_data.pillar_indices.include?(index_to_remove)
     end
 
     def index_to_remove
@@ -25,6 +31,7 @@ module Quadro
     end
 
     def new_proper_data
+      return unless valid_data?
       @new_proper_data ||= adding_candidates.each do |candidate|
         return proper_data.change_pillar(index_to_remove_index, candidate) if can_add?(candidate)
       end

@@ -45,7 +45,7 @@ module Quadro
 
     def compose_ad_helper_vector
       aj0 = proper_data.a.cut([negative_estimate_idx])
-      d_star_j0 = proper_data.proper_d.cut([negative_estimate_idx])
+      d_star_j0 = proper_data.d.cut_rows(proper_data.proper_indices).cut([negative_estimate_idx])
       - aj0.vertcat(d_star_j0.gsl_matrix)
     end
 

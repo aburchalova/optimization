@@ -31,6 +31,10 @@ module Quadro
       ProperPillarData.new(data, change_pillar_plan(what_index, by), proper_indices)
     end
 
+    def clone
+      ProperPillarData.new(data.clone, pillar_plan.clone, proper_indices.clone)
+    end
+
     def construct_kkt
       kkt = Matrix.zeros(block_matrix_size)
       fill_proper_a(kkt)

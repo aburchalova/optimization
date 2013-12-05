@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe Quadro::Direction do
-  let(:data) { double(:ProperData, 
+  let(:data) { double(:ProperData,
     :block_matrix => Matrix.new([0, 1, 0, 0], [1, 0, 0, 0], [1, 0, 0, 1], [0, 1, 1, 0]),
     :a => Matrix.new([0, 1, 1], [1, 1, 0]),
+    :d => Matrix.from_gsl(Matrix.eye(3)),
     :proper_d => Matrix.new([1, 0], [0, 1]),
-    :proper_indices => [0, 2] 
+    :proper_indices => [0, 2]
     ) }
   let(:negative_estimate_idx) { 1 }
 

@@ -15,7 +15,7 @@ module Quadro
     end
 
     def pillar_dependent_c
-      @dependent_c ||= dependent_c.cut_rows(pillar_indices)
+      @pillar_dependent_c ||= dependent_c.cut_rows(pillar_indices)
     end
 
     def dependent_c_ary
@@ -26,6 +26,10 @@ module Quadro
       @pillar_a ||= data.a.cut(pillar_indices)
     end
     alias :pillar_a :pillar_matrix
+
+    def singular_pillar_matrix?
+      @singular_pillar_matrix ||= pillar_matrix.det == 0
+    end
 
     def inverse_pillar_matrix
       @inverse_pillar_matrix ||= pillar_matrix.invert
@@ -50,6 +54,10 @@ module Quadro
     #
     def change_pillar(what_index, by)
       PillarData.new(data, change_pillar_plan(what_index, by))
+    end
+
+    def clone
+      PillarData.new(data.clone, pillar_plan.clone)
     end
 
   end
