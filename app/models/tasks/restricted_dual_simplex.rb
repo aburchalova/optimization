@@ -7,6 +7,11 @@ module Tasks
 
     attr_writer :nonbasis_nonneg_est_idx, :nonbasis_neg_est_idx
 
+    def self.new_without_plan(task, basis_indexes, sign_restrictions)
+      plan = Tasks::RestrictedDualSimplex.first_basis_plan_for(task.a, task.b, task.c, basis_indexes)
+      Tasks::RestrictedDualSimplex.new(task, plan, sign_restrictions)
+    end
+
     def nonbasis_nonneg_est_idx=(idx)
       @nonbasis_nonneg_est_idx = idx
     end
@@ -202,10 +207,15 @@ module Tasks
       BasisPlan.new(fake_task.potential_vector, basis_indices)
     end
 
+    # target function of the MAIN task
+    def target_function
+      (task.c.transpose * Matrix.new(pseudoplan).transpose).get(0)
+    end
+
     # not needed really, because by this
     # we can't tell about target function of the main task
     #
-    def target_function
+    def dual_target_function
       (task.b.transpose * plan.x).get(0)
     end
 
@@ -326,6 +336,9 @@ module Tasks
 
       Current x:
       #{x_ary}
+
+      Current target function of MAIN task:
+      #{target_function}
 
       Basis indices:
       { #{basis_indexes.join(',')} }

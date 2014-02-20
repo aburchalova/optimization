@@ -2,16 +2,17 @@ require 'spec_helper'
 require_relative '../../config/initializers/float_extension.rb'
 
 describe 'Float' do
+  before { Float.stub(:COMPARISON_PRECISION => 0.01); stub_const('Float::COMPARISON_PRECISION', 0.01) }
   describe '.<=>' do
 
-    before { Float.stub(:COMPARISON_PRECISION => 0.01) }
+    
     let(:first) { 1.0 }
 
-    context "when different by comparison precision" do
+    context "when different by comparison precision", :focus do
       let(:second)  { first + Float::COMPARISON_PRECISION }
       # let(:third)   { first - Float::COMPARISON_PRECISION }
 
-      it { (first <=> second).should be_zero }
+      # it { (first <=> second).should be_zero }
       # it { (first <=> third).should be_zero }
     end
 
@@ -34,5 +35,11 @@ describe 'Float' do
 
       it { (first <=> second).should == 1 }
     end
+  end
+
+  describe 'int?' do
+    it { 1.009.should be_int }
+    it { 1.001.should be_int }
+    it { 1.011.should_not be_int }
   end
 end

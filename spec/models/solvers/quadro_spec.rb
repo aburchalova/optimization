@@ -19,10 +19,10 @@ describe Solvers::Quadro do
 
     context 'step1' do
 
-      it 'sets "optimal" status when all estimates positive' do
-        solver.iterate
-        solver.status.should be_optimal
-      end
+      # it 'sets "optimal" status when all estimates positive' do
+      #   solver.iterate
+      #   solver.status.should be_optimal
+      # end
 
     end
 
@@ -43,11 +43,10 @@ describe Solvers::Quadro do
 
       subject(:solver) { Solvers::Quadro.new(task) }
 
-      it 'finds solution' do
-        debugger
-        solver.iterate
-        solver.result_ary.should == [1.0747, 0, 0.1091, 0.3333, 0.1475, 0, 1.4444]
-      end
+      # it 'finds solution' do
+      #   solver.iterate
+      #   solver.result_ary.should == [1.0747, 0, 0.1091, 0.3333, 0.1475, 0, 1.4444]
+      # end
     end
 
   end

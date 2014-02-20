@@ -55,4 +55,13 @@ class Float < Numeric
   def nonzero?
     !zero?
   end
+
+  def fractional_part
+    self - truncate
+  end
+
+  def int?
+    #fractional_part.zero?
+    eq? round
+  end
 end

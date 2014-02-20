@@ -16,7 +16,7 @@ class FirstPhaseSimplexAnalyzer
 
   attr_accessor :task, :status, :logging,
     :real_task_basis, :real_task,
-    :result_task, :result_task_with_basis, :basis_plan,
+    :result_task, :result_task_with_basis, :basis_plan, #basis_plan can be used in simplex method
     :widened_optimal_plan
 
   #real_task [LinearTask] is initially similar to the artificial task, but maybe with some constraints excluded.

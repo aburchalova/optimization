@@ -26,7 +26,7 @@ module Matrices::Optimization
   # 
   def inverse(inverse, k)
     a = alpha(inverse, k)
-    raise ArgumentError, 'Matrix is not inversible' if a.zero?
+    raise ArgumentError, "Matrix \n#{self} is not inversible, a = #{a}" if a.zero?
     d = Matrix.eye(size1) # size1?
     z = - (inverse * column(k)).set(k, -1) / a
     d.set_col(k, z)

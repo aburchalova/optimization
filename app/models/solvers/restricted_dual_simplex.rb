@@ -10,12 +10,24 @@ module Solvers
     end
 
     def calculate_and_change_status
-      return @status.not_a_plan! if !task.basis_plan?
+      # return @status.not_a_plan! if !task.basis_plan?
       return @status.singular! if task.singular_basis_matrix?
       return @status.optimal! if task.sufficient_for_optimal?
       return @status.incompatible! if !task.has_step?
       handle_step_end
     end
+
+    # def compose_new_task #TODO: refactor this crap and add file loading by name
+    #   if finished?
+    #     task
+    #   else
+    #     begin 
+    #       new_task_composer.compose
+    #     rescue ArgumentError => e
+    #       status.
+    #     end
+    #   end
+    # end
 
     def initialize(task_with_plan)
       @initial_task = task_with_plan

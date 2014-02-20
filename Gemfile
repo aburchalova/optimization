@@ -43,6 +43,8 @@ gem 'mysql2'
 gem 'simple_form'
 gem 'thin'
 gem 'gsl'
+gem 'graph'
+gem 'awesome_print'
 
 group :development do
   gem 'html2haml'
