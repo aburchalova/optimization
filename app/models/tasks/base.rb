@@ -29,9 +29,9 @@ module Tasks
     # or just #ind restriction for given item
     #
     def lower_sign_restriction_apply?(x = plan.x, ind = nil)
-      return x >= low_restr[ind] if ind
+      return x.to_f.gte? low_restr[ind] if ind
       x.to_a.flatten.zip(low_restr).all? do |x_item, restr_item|
-        x_item >= restr_item
+        x_item.to_f.gte? restr_item
       end
     end
 
@@ -39,9 +39,9 @@ module Tasks
     # or just #ind restriction for given item
     #
     def upper_sign_restriction_apply?(x = plan.x, ind = nil)
-      return x <= up_restr[ind] if ind
+      return x.to_f.lte? up_restr[ind] if ind
       x.to_a.flatten.zip(up_restr).all? do |x_item, restr_item|
-        x_item <= restr_item
+        x_item.to_f.lte? restr_item
       end
     end   
 

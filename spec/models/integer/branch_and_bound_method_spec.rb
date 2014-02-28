@@ -223,7 +223,7 @@ describe Integer::BranchAndBoundMethod do
     c = Matrix.new_vector([7, 5, -2, 4, 3, 1, 2, 8, 3])
     sign_restr = { lower: [0] * 9, upper: [8] * 9 }
 
-    solver = Integer::BranchAndBoundMethod.simple_init(a, b, c, (0..8).to_a, sign_restr)
+    solver = Integer::BranchAndBoundMethod.simple_init(a, b, c, (0..8).to_a, sign_restr, basis: [0,1, 2, 3, 4])
     solver.iterate
     solver.record.should == 78
     solver.record_ary.should == [3, 5, 0, 0, 0, 0, 8, 2, 0]

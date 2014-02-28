@@ -17,6 +17,7 @@ class Integer::BranchAndBoundMethod
   # task is Integer::Task
   # options logging: false
   #         printing: false
+  #         basis
   #
   def initialize(task, options = {})
     @task = task
@@ -25,6 +26,7 @@ class Integer::BranchAndBoundMethod
     @status = Statuses::BranchAndBound.new
     @logging = options[:logging] || false
     @printing = options[:printing] || false
+    @first_basis = options[:basis]
     @tasks_list = []
     @tasks_tree = []
   end
@@ -41,7 +43,7 @@ class Integer::BranchAndBoundMethod
   # Find a basis for the first task and add it to the list
   #
   def fill_first_task
-    first_basis = basis_for_initial_task
+    first_basis = @first_basis || basis_for_initial_task
     return unless first_basis # no initial basis for current task
     dual_task = Tasks::RestrictedDualSimplex.new_without_plan(
       task.task,
@@ -55,6 +57,7 @@ class Integer::BranchAndBoundMethod
   #
   def step
     log_iteration_start
+
 
     @current_task = tasks_list.shift
     status.no_tasks! and return unless current_task #empty tasks list
