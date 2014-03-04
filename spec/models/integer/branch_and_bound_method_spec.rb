@@ -65,9 +65,10 @@ describe Integer::BranchAndBoundMethod do
     restr) }
     let(:solver) { Integer::BranchAndBoundMethod.new(task) }
 
-    before { solver.fill_first_task }
+    
 
     context 'before first step' do
+      before { solver.fill_first_task }
       it 'fills first task' do
         solver.tasks_list.length.should == 1
         task = solver.tasks_list.first
@@ -86,6 +87,7 @@ describe Integer::BranchAndBoundMethod do
 
 
     context 'step 1' do
+      before { solver.fill_first_task }
       before { solver.step }
       before { stub_const('Float::COMPARISON_PRECISION', 0.01) }
 
@@ -119,6 +121,7 @@ describe Integer::BranchAndBoundMethod do
 
     context 'solution' do
       it 'finds record and record plan' do
+        solver.logging = true
         solver.iterate
         solver.record.should == 70
         solver.record_ary.should == [5, 5, 3, 4, 0, 1, 6, 8]

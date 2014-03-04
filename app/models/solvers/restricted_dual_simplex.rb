@@ -1,33 +1,21 @@
 module Solvers
 
-  class RestrictedDualSimplex < Solvers::Base #TODO: refactor
+  class RestrictedDualSimplex < Solvers::Base
     attr_accessor :used_basises
 
     def self.simple_init(a, b, c, basis, restr = {})
+      # find first plan for given basis indexes
       plan = Tasks::RestrictedDualSimplex.first_basis_plan_for(a, b, c, basis)
       task = LinearTask.new(:a => a, :b => b, :c => c)
       new(Tasks::RestrictedDualSimplex.new(task, plan, restr))
     end
 
     def calculate_and_change_status
-      # return @status.not_a_plan! if !task.basis_plan?
       return @status.singular! if task.singular_basis_matrix?
       return @status.optimal! if task.sufficient_for_optimal?
       return @status.incompatible! if !task.has_step?
       handle_step_end
     end
-
-    # def compose_new_task #TODO: refactor this crap and add file loading by name
-    #   if finished?
-    #     task
-    #   else
-    #     begin 
-    #       new_task_composer.compose
-    #     rescue ArgumentError => e
-    #       status.
-    #     end
-    #   end
-    # end
 
     def initialize(task_with_plan)
       @initial_task = task_with_plan
@@ -49,7 +37,6 @@ module Solvers
 
     def handle_step_end
       warn_if_zero_step
-      # raise LoopError if used_basises.include? task.basis_indexes
       used_basises << task.basis_indexes
       @status.step_completed!
     end

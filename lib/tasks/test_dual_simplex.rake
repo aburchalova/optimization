@@ -34,7 +34,7 @@ namespace :dual do
       [0, 1, 0, 4, -3, 3, 5, 3],
       [0, 0, 1, 1, 0, 2, -2, 1]
     )
-    b = Matrix.new([3, 7, 5]).transpose
+    b = Matrix.new([30, 78, 5]).transpose
     c = Matrix.new_vector([2, 1, -2, -1, 4, -5, 5, 5])
 
     basis = [0, 1, 2]

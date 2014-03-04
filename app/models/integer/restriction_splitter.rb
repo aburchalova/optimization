@@ -1,46 +1,33 @@
 class Integer::RestrictionSplitter
-  attr_accessor :plan, :integer_restrictions, :sign_restrictions
+  attr_accessor :plan, :integer_task, :sign_restrictions
 
   # plan BasisPlan
-  # integer_restrictions Array<Fixnum>
+  # integer_task Integer::Task
   # sign_restrictions Hash { lower: [...], upper: [...] }
-  def initialize(plan, integer_restrictions, sign_restrictions)
+  def initialize(plan, integer_task, sign_restrictions)
     @plan = plan
-    @integer_restrictions = integer_restrictions
+    @integer_task = integer_task
     @sign_restrictions = sign_restrictions
-  end
-
-  # All indices of variables that need to be integer but are not
-  # 
-  # @return [Array] empty array if everything corresponds
-  def noninteger_vars_with_indices
-    @nonint_with_indices ||= plan.x_ary.each_with_index.find_all do |value, idx| 
-      integer_restrictions.include?(idx) && !value.int?
-    end
-  end
-
-  def first_noninteger_var_with_index
-    noninteger_vars_with_indices.first
   end
 
   # fixnum index if there is a variable that doesn't satisfy restrictions, nil otherwise
   def first_noninteger_index
-    first_noninteger_var_with_index.last
+    integer_task.first_noninteger_index(plan)
   end
 
   # float if there is a variable that doesn't satisfy restrictions, nil otherwise
   def first_noninteger_var
-    first_noninteger_var_with_index.first
+    integer_task.first_noninteger_var(plan)
   end
 
   # From sign restrictions of this task compose two restrictions that are
   # the same as current except the restrictions for item on position j0
   # where j0 is the position of item that doesn't satisfy integer conditions
-  # 
+  #
   # if in current task restriction j0 is d1 <= xj0 <= d2
   # in first splitted it will be         d1 <= xj0 <= [ xj0 ]
   # in second                            [xj0] + 1 <= xj0 <= d2
-  # 
+  #
   # @return [Array<Hash>] hash format: { lower: [...], upper: [...] }
   def split_restrictions
     [
@@ -64,5 +51,5 @@ class Integer::RestrictionSplitter
         ary[idx] = new_upper_value if new_upper_value
       end
     end
-  end  
+  end 
 end

@@ -24,7 +24,6 @@ module Tasks
     # @return [true, false] if x is task plan
     #
     def plan?
-      # sign_restrictions_apply?(coplan)
       # in this task coplan can be negative too,
       # so we don't check plan for being positive.
       true
@@ -333,25 +332,16 @@ module Tasks
     %Q(
       Basis matrix:
       #{a_b}
-
-      Current x:
-      #{x_ary}
-
-      Current target function of MAIN task:
-      #{target_function}
-
-      Basis indices:
-      { #{basis_indexes.join(',')} }
+      Current y: #{x_ary}
+      Current target function of MAIN task: #{target_function}
+      Basis indices = { #{basis_indexes.join(',')} }, Jb- = { #{nonbasis_neg_est_idx} }, Jb+ = { #{nonbasis_nonneg_est_idx} }
         )
   end
 
   def description_for_non_singular
     %Q(
-      Estimates, coplan
-      #{coplan}
-
-      Kappa:
-      #{kappa}
+      Estimates, coplan #{coplan.to_a.flatten}
+      Kappa: #{kappa}
     )
   end
 

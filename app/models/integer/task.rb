@@ -24,4 +24,27 @@ class Integer::Task < Tasks::Base
     integer_restrictions.all? { |i| current_plan.x_ary[i].to_f.int? }
   end
 
+  # All indices of variables that need to be integer but are not
+  # 
+  # @return [Array] empty array if everything corresponds
+  def noninteger_vars_with_indices(current_plan)
+    current_plan.x_ary.each_with_index.find_all do |value, idx| 
+      integer_restrictions.include?(idx) && !value.int?
+    end
+  end
+
+  def first_noninteger_var_with_index(current_plan)
+    noninteger_vars_with_indices(current_plan).first
+  end
+
+  # fixnum index if there is a variable that doesn't satisfy restrictions, nil otherwise
+  def first_noninteger_index(current_plan)
+    first_noninteger_var_with_index(current_plan).last
+  end
+
+  # float if there is a variable that doesn't satisfy restrictions, nil otherwise
+  def first_noninteger_var(current_plan)
+    first_noninteger_var_with_index(current_plan).first
+  end
+
 end

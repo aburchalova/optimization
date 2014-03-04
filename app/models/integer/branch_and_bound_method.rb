@@ -133,7 +133,7 @@ class Integer::BranchAndBoundMethod
   def split_current_task
     splitter = Integer::RestrictionSplitter.new(
       current_basis_plan,
-      task.integer_restrictions,
+      task,
       current_task.sign_restrictions)
     new_restrictions = splitter.split_restrictions
     task1 = Tasks::RestrictedDualSimplex.new_without_plan(
