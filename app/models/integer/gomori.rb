@@ -21,6 +21,9 @@ class Integer::Gomori
     # @current_basis_plan = basis_for_current_task
     # return unless current_basis_plan
     solve_current_task
+    check_optimality
+    return if status.integer_solution?
+    compose_cutting_plane
 
   end
 
@@ -40,6 +43,15 @@ class Integer::Gomori
     @current_basis_plan = result_status.data
     @current_target_function = calculate_current_target_function
     log_current_task_solved
+  end
+
+  def check_optimality
+    return unless @current_basis_plan
+    status.integer_solution! if integer_task.satisfies_integer?(@current_basis_plan)
+  end
+
+  def compose_cutting_plane
+
   end
 
   def calculate_current_target_function
@@ -62,5 +74,9 @@ class Integer::Gomori
 
   def log(string)
     puts string if logging
+  end
+
+  def integer_task
+    @integer_task ||= Integer::Task.new(current_task.task, nil, current_task.indices, lower: 0)
   end
 end
