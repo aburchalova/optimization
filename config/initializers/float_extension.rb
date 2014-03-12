@@ -57,7 +57,7 @@ class Float < Numeric
   end
 
   def fractional_part
-    self - truncate
+    modulo(1)
   end
 
   def int?
