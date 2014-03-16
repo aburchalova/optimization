@@ -57,11 +57,11 @@ class Float < Numeric
   end
 
   def fractional_part
-    self - truncate
+    int? ? 0 : modulo(1)
   end
 
   def int?
-    #fractional_part.zero?
+    # fractional_part.zero?
     eq? round
   end
 end

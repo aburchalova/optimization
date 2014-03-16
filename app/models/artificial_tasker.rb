@@ -4,7 +4,7 @@ class ArtificialTasker
   attr_accessor :initial_task, :task
 
   def initialize(task)
-    @initial_task = task
+    @initial_task = task.invert_neg_rows
     @task = LinearTask.new(:a => new_a, :b => task.b, :c => new_c)
   end
 
@@ -13,7 +13,7 @@ class ArtificialTasker
   end
 
   def task_with_plan
-    @task_with_basis ||= Tasks::Simplex.new task, @first_plan
+    @task_with_basis ||= Tasks::Simplex.new(task, @first_plan, invert_negative: true)
   end
 
   # Processes all shit

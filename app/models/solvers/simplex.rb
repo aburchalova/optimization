@@ -3,7 +3,7 @@ module Solvers
 
     def self.simple_init(a, b, c, plan, basis)
       task, x = super
-      new(Tasks::Simplex.new(task, x))
+      new(Tasks::Simplex.new(task, x, invert_negative: true))
     end
 
     # inverse matrix without inverter on step 1

@@ -7,13 +7,27 @@ require 'delegate'
 module Tasks
   class Simplex < Tasks::Base
 
+    # invert_negative : if there are negative items in b,
+    # they will be inverted with corresponding A rows
+    def initialize(linear_task, basis_plan, options = { invert_negative: false })
+      if options[:invert_negative]
+        linear_task = linear_task.invert_neg_rows
+      end
+      super(linear_task, basis_plan)
+    end
+
+    def x_gsl
+      plan.x.respond_to?(:gsl_matrix) ? plan.x.gsl_matrix : plan.x
+    end
+
     #
     # @param x [Matrix] solution vector
     # @return [true, false] if x is task plan
     #
     def plan?
       # because right-side arg can only be gsl matrix
-      task.a * plan.x == task.b && sign_restrictions_apply?(plan.x)
+      debugger unless task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
+      task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
     end
 
     # number of basis indexes = equations number
@@ -54,7 +68,7 @@ module Tasks
     end
 
     def target_function
-      (task.c_string * plan.x).get(0)
+      (task.c_string * x_gsl).get(0)
     end
 
     # M vector

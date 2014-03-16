@@ -43,6 +43,7 @@ class FirstPhaseSimplexAnalyzer
 
   def solve_artificial_task
     @widened_optimal_plan = artificial_tasker.solve.data
+    debugger unless widened_optimal_plan
     status.inner_error! unless widened_optimal_plan # if no result, data = nil
     widened_optimal_plan
   end
@@ -50,7 +51,7 @@ class FirstPhaseSimplexAnalyzer
   def try_compose_real_task_with_plan
     if compatible_constraints?
       @basis_plan = find_initial_task_basis_plan
-      @result_task_with_basis = Tasks::Simplex.new result_task, basis_plan
+      @result_task_with_basis = Tasks::Simplex.new(result_task, basis_plan, invert_negative: true)
     else
       status.incompatible!
     end
