@@ -24,13 +24,13 @@ describe 'Float' do
     end
 
     context "when first is less by more than precision" do
-      let(:second)  { first + Float::COMPARISON_PRECISION * 2 }
+      let(:second)  { first + Float::COMPARISON_PRECISION + Float::COMPARISON_PRECISION }
 
       it { (first <=> second).should == -1 }
     end
 
     context "when first is more by more than precision" do
-      let(:second)  { first - Float::COMPARISON_PRECISION * 2 }
+      let(:second)  { first - Float::COMPARISON_PRECISION - Float::COMPARISON_PRECISION }
 
       it { (first <=> second).should == 1 }
     end
@@ -52,5 +52,15 @@ describe 'Float' do
     it { integer_part.should == -2 }
     # testing that float part of a number that's actually floating but with current precision integer
     it { 0.999999999.fractional_part.should == 0 }
+  end
+
+  describe '#*' do
+    let(:a) { Float::COMPARISON_PRECISION / 2 } # obviously zero
+    let(:b) { 10 ** 10 } # obviously big
+
+    it 'is zero when at least one of multipliers is zero' do
+      (a * b).should be_zero
+      (b.to_f * a).should be_zero
+    end
   end
 end

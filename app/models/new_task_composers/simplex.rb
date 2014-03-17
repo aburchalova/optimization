@@ -5,6 +5,7 @@ module NewTaskComposers
       result = Array.new(task.n, 0)
       fill_basis_components(result)
       fill_non_basis_components(result)
+      debugger if result.find &:neg?
       Matrix.new(result).transpose
     end
 

@@ -64,4 +64,14 @@ class Float < Numeric
     # fractional_part.zero?
     eq? round
   end
+
+  alias :multiply :*
+
+  def *(other)
+    if zero? || other.zero?
+      0
+    else
+      self.multiply(other)
+    end
+  end
 end

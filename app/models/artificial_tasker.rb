@@ -22,6 +22,7 @@ class ArtificialTasker
   def solve
     find_first_plan
     solver = Solvers::Simplex.new(task_with_plan)
+    debugger if task_with_plan.plan.x_ary.find &:neg?
     solver.result
   end
 

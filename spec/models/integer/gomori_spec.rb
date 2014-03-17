@@ -173,22 +173,6 @@ describe Integer::Gomori do
         it { should == [0, 2, 0, 2, 24, 22] }
       end
 
-      context 'task 2', :focus do
-        let(:a) {
-          Matrix.new(
-            [1, -3, 2, 0, 1, -1, 4, -1, 0],
-            [1, -1, 6, 1, 0, -2, 2, 2, 0],
-            [2, 2, -1, 1, 0, -3, 8, -1, 1],
-            [4, 1, 0, 0, 1, -1, 0, -1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1]
-          )
-        }
-        let(:b) { Matrix.new([3, 9, 9, 5, 9]).transpose }
-        let(:c) { Matrix.new_vector([-1, 5, -2, 4, 3, 1, 2, 8, 3]) }
-
-        it { should == [1, 1, 1, 1, 1, 1, 1, 1, 1] }
-      end
-
       context 'task 3' do
         let(:a) {
           Matrix.new(
@@ -202,21 +186,6 @@ describe Integer::Gomori do
 
         it { should == [77, 2, 5, 0, 0, 1, 0, 34] }
       end
-
-      # context 'task 4', :focus do
-
-      #   let(:a) {
-      #     Matrix.new(
-      #       [1, 2, 3, 12, 1, -3, 4, -1, 2, 3],
-      #       [0, 2, 0, 11, 12, 3, 5, 3, 4, 5],
-      #       [0, 0, 2, 1, 0, 22, -2, 1, 6, 7]
-      #     )
-      #   }
-      #   let(:b) { Matrix.new([153, 123, 112]).transpose }
-      #   let(:c) { Matrix.new_vector([2, 1, -2, -1, 4, -5, 5, 5, 1, 2]) }
-
-      #   it { should == [188, 0, 4, 0, 0, 3, 0, 38, 0, 0] }
-      # end
 
       context 'task 5' do
         let(:a) {
@@ -261,6 +230,51 @@ describe Integer::Gomori do
 
         it { should == [1, 1, 0, 3, 3, 3, 0] }
       end
+    end
+
+    context 'tasks that need special precision' do
+      before do
+        stub_const('Float::COMPARISON_PRECISION', 0.0001)
+        solver.iterate
+      end
+
+      subject { solver.natural_result_ary }
+
+      # problem: when artificial tasker solves art task
+      # minimal theta = 0.00..., e.g. zero
+      # but when it's multiplied by step -- it becomes not zero
+      # and when it's substracted from corr. x (zero), new x becomes < 0
+      #
+      context 'task 2', :focus do
+        let(:a) {
+          Matrix.new(
+            [1, -3, 2, 0, 1, -1, 4, -1, 0],
+            [1, -1, 6, 1, 0, -2, 2, 2, 0],
+            [2, 2, -1, 1, 0, -3, 8, -1, 1],
+            [4, 1, 0, 0, 1, -1, 0, -1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1]
+          )
+        }
+        let(:b) { Matrix.new([3, 9, 9, 5, 9]).transpose }
+        let(:c) { Matrix.new_vector([-1, 5, -2, 4, 3, 1, 2, 8, 3]) }
+
+        it { should == [1, 1, 1, 1, 1, 1, 1, 1, 1] }
+      end
+
+      # context 'task 4', :focus do
+
+      #   let(:a) {
+      #     Matrix.new(
+      #       [1, 2, 3, 12, 1, -3, 4, -1, 2, 3],
+      #       [0, 2, 0, 11, 12, 3, 5, 3, 4, 5],
+      #       [0, 0, 2, 1, 0, 22, -2, 1, 6, 7]
+      #     )
+      #   }
+      #   let(:b) { Matrix.new([153, 123, 112]).transpose }
+      #   let(:c) { Matrix.new_vector([2, 1, -2, -1, 4, -5, 5, 5, 1, 2]) }
+
+      #   it { should == [188, 0, 4, 0, 0, 3, 0, 38, 0, 0] }
+      # end
 
       # context 'task 9' do
       #   let(:a) {

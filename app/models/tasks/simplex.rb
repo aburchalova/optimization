@@ -28,6 +28,7 @@ module Tasks
       # because right-side arg can only be gsl matrix
       debugger unless task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
       task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
+      # true
     end
 
     # number of basis indexes = equations number
