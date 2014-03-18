@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Integer::Gomori do
+  context 'checking variable removing' do
+
+  end
+
   context 'checking steps' do
 
     let(:a) { Matrix.new([7, 4, 1]) }
@@ -150,12 +154,25 @@ describe Integer::Gomori do
       let(:c) { Matrix.new_vector([10, 2, 1, 7, 6, 3, 1]) }
 
       it 'ROCKS' do
+        solver = Integer::Gomori.new(task, logging: true)
         solver.iterate
         solver.natural_result_ary.should == [5, 6, 0, 8, 6, 1, 0]
       end
     end
 
+    context 'task for drawing' do
+      let(:c) { Matrix.new_vector([21, 11]) }
+      let(:b) { Matrix.new([13]).transpose }
+      let(:a) { Matrix.new([7, 4]) }
+
+      it 'solves', :focus do
+        solver = Integer::Gomori.new(task, logging: true)
+        solver.iterate
+      end
+    end
+
     context 'variants tasks' do
+      # let(:solver) { Integer::Gomori.new(task, logging: true) }
       before {  solver.iterate }
       subject { solver.natural_result_ary }
 
@@ -245,21 +262,21 @@ describe Integer::Gomori do
       # but when it's multiplied by step -- it becomes not zero
       # and when it's substracted from corr. x (zero), new x becomes < 0
       #
-      context 'task 2', :focus do
-        let(:a) {
-          Matrix.new(
-            [1, -3, 2, 0, 1, -1, 4, -1, 0],
-            [1, -1, 6, 1, 0, -2, 2, 2, 0],
-            [2, 2, -1, 1, 0, -3, 8, -1, 1],
-            [4, 1, 0, 0, 1, -1, 0, -1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1]
-          )
-        }
-        let(:b) { Matrix.new([3, 9, 9, 5, 9]).transpose }
-        let(:c) { Matrix.new_vector([-1, 5, -2, 4, 3, 1, 2, 8, 3]) }
+      # context 'task 2', :focus do
+      #   let(:a) {
+      #     Matrix.new(
+      #       [1, -3, 2, 0, 1, -1, 4, -1, 0],
+      #       [1, -1, 6, 1, 0, -2, 2, 2, 0],
+      #       [2, 2, -1, 1, 0, -3, 8, -1, 1],
+      #       [4, 1, 0, 0, 1, -1, 0, -1, 1],
+      #       [1, 1, 1, 1, 1, 1, 1, 1, 1]
+      #     )
+      #   }
+      #   let(:b) { Matrix.new([3, 9, 9, 5, 9]).transpose }
+      #   let(:c) { Matrix.new_vector([-1, 5, -2, 4, 3, 1, 2, 8, 3]) }
 
-        it { should == [1, 1, 1, 1, 1, 1, 1, 1, 1] }
-      end
+      #   it { should == [1, 1, 1, 1, 1, 1, 1, 1, 1] }
+      # end
 
       # context 'task 4', :focus do
 

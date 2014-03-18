@@ -67,11 +67,11 @@ class Float < Numeric
 
   alias :multiply :*
 
-  def *(other)
-    if zero? || other.zero?
-      0
-    else
-      self.multiply(other)
-    end
-  end
+  # def *(other)
+  #   if zero? || other.zero?
+  #     0
+  #   else
+  #     self.multiply(other)
+  #   end
+  # end
 end

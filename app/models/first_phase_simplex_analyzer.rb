@@ -43,7 +43,6 @@ class FirstPhaseSimplexAnalyzer
 
   def solve_artificial_task
     @widened_optimal_plan = artificial_tasker.solve.data
-    debugger unless widened_optimal_plan
     status.inner_error! unless widened_optimal_plan # if no result, data = nil
     widened_optimal_plan
   end

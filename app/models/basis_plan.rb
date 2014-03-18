@@ -54,6 +54,6 @@ class BasisPlan < Struct.new(:x, :basis_indexes)
   end
 
   def clone
-    BasisPlan.new(:x => x.clone, :basis_indexes => basis_indexes.dup)
+    BasisPlan.new(x.clone, basis_indexes.dup)
   end
 end

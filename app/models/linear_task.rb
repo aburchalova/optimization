@@ -35,10 +35,19 @@ class LinearTask < Struct.new(:a, :b, :c)
     c.to_a.flatten
   end
 
+  def print
+    puts("A = ")
+    a.print
+    puts("b = ")
+    b.print
+    puts("c' = ")
+    c_string.print
+  end
+
   def to_s
     %Q(
       A = #{m} by #{n} matrix
-      #{a.to_s}
+      #{a.to_a}
 
       b =
       #{b.to_s}

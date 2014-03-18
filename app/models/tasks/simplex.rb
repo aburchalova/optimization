@@ -26,9 +26,7 @@ module Tasks
     #
     def plan?
       # because right-side arg can only be gsl matrix
-      debugger unless task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
       task.a * x_gsl == task.b  && sign_restrictions_apply?(plan.x)
-      # true
     end
 
     # number of basis indexes = equations number
@@ -69,6 +67,7 @@ module Tasks
     end
 
     def target_function
+      debugger if task.c_string.to_a.flatten.length != x_gsl.to_a.flatten.length
       (task.c_string * x_gsl).get(0)
     end
 
